@@ -6,4 +6,4 @@ simple gallery
 dependecies
 -----------
 
-- dbtemplates
+- image filer
