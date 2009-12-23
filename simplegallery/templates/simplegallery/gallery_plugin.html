@@ -1,0 +1,47 @@
+{% load i18n thumbnail %}
+
+<script type="text/javascript">
+//<![CDATA[
+	$(function() {
+	    $('#simplegallery_{{ instance.id }} .gallery_content .holder a.plus').lightBox({fixedNavigation:true,containerResizeSpeed: 0});
+		$('#simplegallery_{{ instance.id }} .gallery_content .holder a.pic').lightBox({fixedNavigation:true,containerResizeSpeed: 0});
+	
+		$('#simplegallery_{{ instance.id }} .gallery_content').cycle({
+	        fx:    'scrollLeft',
+	        speed:  '900',
+	        timeout: 10000,
+	        pager:  '#simplegallery_{{ instance.id }} .gallery_nav',
+	        pagerAnchorBuilder: function(idx, slide) {
+	            return '#simplegallery_{{ instance.id }} .gallery_nav li:eq(' + (idx) + ') a';
+	        }		
+		});
+		$('#simplegallery_{{ instance.id }} .gallery_content .holder a.plus').click(function() { 
+		    $('#simplegallery_{{ instance.id }} .gallery_content').cycle('pause');
+		});
+		$('#simplegallery_{{ instance.id }} .gallery_content .holder a.pic').click(function() { 
+		    $('#simplegallery_{{ instance.id }} .gallery_content').cycle('pause'); 
+		});
+		$('#simplegallery_{{ instance.id }} .gallery_nav li a').click(function() { 
+	    	$('#simplegallery_{{ instance.id }} .gallery_content').cycle('resume'); 
+		});
+	});
+//]]>
+</script>
+	
+<!--[if IE 6]>	
+	<script type="text/javascript">	
+		DD_belatedPNG.fix('#simplegallery_{{ instance.id }} .gallery_content .holder .plus');
+	</script>		
+<![endif]-->
+
+<div class="simplegallery clearfix" id="simplegallery_{{ instance.id }}">
+	<div class="gallery_content"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %}>{% for image in gallery.images.all %}
+        <div class="holder">
+            <a href="{% thumbnail image.file 800x600 %}" class="plus">{% trans 'enlarge' %}</a>
+            <a href="{% thumbnail image.file 800x600 %}" title="{{ image.title|escape }}" class="pic"><img src="{% thumbnail image.file image_size.0 crop,upscale %}" alt="{{ image.description|escape }}" /></a>
+        </div>{% endfor %}
+    </div>				
+    <ul class="gallery_nav clearfix">{% for image in gallery.images.all %}
+        <li{% if forloop.first %} class="first"{% endif %}><a href="#"><img src="{% thumbnail image.file 50x40 crop%}" title="{{ image.title }}" alt="{{ image.description }}" /></a></li>{% endfor %}
+    </ul>
+</div>

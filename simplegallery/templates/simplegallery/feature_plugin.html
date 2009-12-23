@@ -1,0 +1,49 @@
+{% load i18n thumbnail %}
+
+<script type="text/javascript">
+//<![CDATA[
+$(function() {
+	$('#feature_top_slideshow_{{ instance.id }} .slideshow_content .holder').hide();
+	$('#feature_top_slideshow_{{ instance.id }} .slideshow_content').cycle({
+        fx:    'fade',
+        speed:  '900',
+        timeout: {{ instance.interval }} * 1000,
+        pager:  '#feature_top_slideshow_{{ instance.id }} .slideshow_nav',
+        pagerAnchorBuilder: function(idx, slide) {
+            return '#feature_top_slideshow_{{ instance.id }} .slideshow_nav li:eq(' + (idx) + ') a';
+        }
+	});
+	$("#feature_top_slideshow_{{ instance.id }} .slideshow_nav li a").click(function () {
+		return false;
+	});
+});
+//]]>
+</script>		
+<!--[if IE 6]>	
+	<script type="text/javascript">	
+		DD_belatedPNG.fix('#feature_top_slideshow_{{ instance.id }} .slideshow_nav li a');
+	</script>		
+<![endif]-->
+
+<div class="feature_top_slideshow" id="feature_top_slideshow_{{ instance.id }}">
+    <ul class="slideshow_nav">
+    	{% for image in images %}
+        <li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="#">{{ forloop.counter }}</a></li>
+		{% endfor %}
+    </ul>
+	<div class="slideshow_content">
+    	{% for image in images %}
+		{% with image.get_url as url %}
+        <div class="holder">
+   			<div class="feature_content_2"><p>{{ image.description_2 }}<br /><span>{{ image.title_2 }}</span></p></div>
+			{% if url %}<a href="{{ url }}" class="pic">{% endif %}<img src="{% thumbnail image.file image_size.0 crop,upscale %}" alt="{{ image.description }}" />{% if url %}</a>{% endif %}
+			<div class="feature_content_1">
+				<h2>{{ image.title }}</h2>
+				{{ image.description|linebreaks }}
+				{% if url %}<a href="{{ url }}" class="more">{% trans "more" %}</a>{% endif %}
+			</div>
+		</div>
+		{% endwith %}
+		{% endfor %}
+    </div>
+</div>
