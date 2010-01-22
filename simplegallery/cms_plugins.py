@@ -71,19 +71,13 @@ class CarouselFeaturePlugin(CMSPluginBase):
 plugin_pool.register_plugin(CarouselFeaturePlugin)
 
 def get_image_size(context, instance):
-    try:
-        theme = context['theme']       
-        theme_parts = theme.split('_')
-        if len(theme_parts) < 3:
-            # no px width included in theme string
-            width = int(theme_parts[1]) * 60
-            if width < 960:
-                width -= 20
-        else:
-            # px width included in theme string (i.e. 6_16_340)
-            width = int(theme_parts[2])
-    except (KeyError, IndexError, ValueError):
-        return ''
+    placeholder_width = context.get('width', None)
+    if placeholder_width:
+        width = placeholder_width
+    else:
+        try:
+            width = instance.image.width
+        except:
+            width = 100
     height = int(float(width) / instance.aspect_ratio)
-    
-    return u'%sx%s' % (width, height), width, height
+    return (u'%sx%s' % (width, height), width, height)

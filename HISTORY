@@ -1,0 +1,3 @@
+0.10.0a
+=======
+Changed image fields from image_filer to filer (backwards incompatible change)

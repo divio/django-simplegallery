@@ -36,7 +36,7 @@ $(function() {
 		{% with image.get_url as url %}
         <div class="holder">
    			<div class="feature_content_2"><p>{{ image.description_2 }}<br /><span>{{ image.title_2 }}</span></p></div>
-			{% if url %}<a href="{{ url }}" class="pic">{% endif %}<img src="{% thumbnail image.file image_size.0 crop,upscale %}" alt="{{ image.description }}" />{% if url %}</a>{% endif %}
+			{% if url %}<a href="{{ url }}" class="pic">{% endif %}<img src="{% thumbnail image.image image_size.0 crop,upscale %}" alt="{{ image.description }}" />{% if url %}</a>{% endif %}
 			<div class="feature_content_1">
 				<h2>{{ image.title }}</h2>
 				{{ image.description|linebreaks }}
