@@ -21,7 +21,7 @@ class GalleryAdmin(multilingual.MultilingualModelAdmin):
     inlines = [
         ImageInline,
     ]
-    list_display = ('title', 'description',)
+    list_display = ('name', 'description',)
     search_fields = ('translations__title','translations__description',)
     # using ordering somehow results in double querysets
 #    ordering = ('translations__title', )

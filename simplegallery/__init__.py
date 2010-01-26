@@ -1,2 +1,2 @@
-VERSION = (0, 10, 0, 'a2')
-__version__ = '0.10.0a2' 
+VERSION = (0, 10, 1, 'a1')
+__version__ = '0.10.1a1'

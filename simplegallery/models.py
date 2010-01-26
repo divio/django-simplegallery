@@ -10,6 +10,8 @@ import multilingual
 from filer.fields.image import FilerImageField
 
 class Gallery(models.Model):
+    name = models.CharField(max_length=255, unique=True,
+        help_text=_("A unique identifier for this gallery, this will only be used in the admin panel."))
     class Translation(multilingual.Translation):
         title = models.CharField(max_length=255, null=True, blank=True)
         description = models.TextField(null=True, blank=True)
@@ -19,7 +21,7 @@ class Gallery(models.Model):
         verbose_name_plural = _('galleries')
 
     def __unicode__(self):
-        return self.title
+        return self.name
 
 class Image(models.Model):
     gallery = models.ForeignKey(Gallery, related_name="images")
