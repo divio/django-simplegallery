@@ -9,6 +9,9 @@ class Migration:
         
         # Changing field 'GalleryPublication.style'
         # (to signature: django.db.models.fields.CharField(max_length=255, blank=True))
+        for g in orm.GalleryPublication.objects.filter(style__isnull=True):
+            g.style = ''
+            g.save()
         db.alter_column('cmsplugin_gallerypublication', 'style', orm['simplegallery.gallerypublication:style'])
         
     
