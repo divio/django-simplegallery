@@ -14,6 +14,9 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
     change_form_template = "simplegallery/plugin_form.html"
     text_enabled = False 
     
+    if not getattr(settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES', False):
+        exclude = ('style',)
+    
     def render(self, context, instance, placeholder):
         context.update({
             'instance': instance,

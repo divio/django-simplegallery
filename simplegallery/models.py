@@ -9,6 +9,8 @@ import multilingual
 
 from filer.fields.image import FilerImageField
 
+CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES',() )
+
 class Gallery(models.Model):
     name = models.CharField(max_length=255, unique=True,
         help_text=_("A unique identifier for this gallery, this will only be used in the admin panel."))
@@ -55,7 +57,7 @@ aspect_ratio_choices = getattr(settings, "IMAGE_ASPECT_RATIO_CHOICES", (
 class GalleryPublication(CMSPlugin):
     gallery = models.ForeignKey(Gallery)
     interval = models.PositiveSmallIntegerField(_('interval'), default=0)
-    overlay_text = models.BooleanField(_('show description on a overlay'), default=False)
+    style = models.CharField(_("teaser style"), max_length=255, null=True, blank=True, choices=CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES)
     aspect_ratio = models.FloatField(_('aspect ratio'), choices=aspect_ratio_choices, default=1)
     
     def __unicode__(self):

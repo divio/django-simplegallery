@@ -10,8 +10,8 @@ class Migration:
         # Adding field 'GalleryPublication.interval'
         db.add_column('cmsplugin_gallerypublication', 'interval', orm['simplegallery.gallerypublication:interval'])
         
-        # Adding field 'GalleryPublication.overlay_text'
-        db.add_column('cmsplugin_gallerypublication', 'overlay_text', orm['simplegallery.gallerypublication:overlay_text'])
+        # Adding field 'GalleryPublication.style'
+        db.add_column('cmsplugin_gallerypublication', 'style', orm['simplegallery.gallerypublication:style'])
         
     
     
@@ -20,8 +20,8 @@ class Migration:
         # Deleting field 'GalleryPublication.interval'
         db.delete_column('cmsplugin_gallerypublication', 'interval')
         
-        # Deleting field 'GalleryPublication.overlay_text'
-        db.delete_column('cmsplugin_gallerypublication', 'overlay_text')
+        # Deleting field 'GalleryPublication.style'
+        db.delete_column('cmsplugin_gallerypublication', 'style')
         
     
     
@@ -172,7 +172,7 @@ class Migration:
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
             'gallery': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['simplegallery.Gallery']"}),
             'interval': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
-            'overlay_text': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'})
+            'style': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         },
         'simplegallery.gallerytranslation': {
             'Meta': {'unique_together': "(('language_id', 'master'),)", 'db_table': "'simplegallery_gallery_translation'"},
