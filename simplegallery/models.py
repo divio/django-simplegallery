@@ -54,6 +54,8 @@ aspect_ratio_choices = getattr(settings, "IMAGE_ASPECT_RATIO_CHOICES", (
 
 class GalleryPublication(CMSPlugin):
     gallery = models.ForeignKey(Gallery)
+    interval = models.PositiveSmallIntegerField(_('interval'), default=0)
+    overlay_text = models.BooleanField(_('show description on a overlay'), default=False)
     aspect_ratio = models.FloatField(_('aspect ratio'), choices=aspect_ratio_choices, default=1)
     
     def __unicode__(self):
