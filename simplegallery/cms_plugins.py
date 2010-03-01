@@ -12,7 +12,7 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
     name = _("SimpleGallery Publication")
     render_template = "simplegallery/gallery_plugin.html"
     change_form_template = "simplegallery/plugin_form.html"
-    text_enabled = False 
+    text_enabled = False
     
     if not getattr(settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES', False):
         exclude = ('style',)
