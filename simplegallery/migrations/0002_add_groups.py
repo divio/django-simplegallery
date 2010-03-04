@@ -8,6 +8,9 @@ class Migration(SchemaMigration):
     
     def forwards(self, orm):
         
+        # Changing field 'GalleryTranslation.language_code'
+        db.alter_column('simplegallery_gallery_translation', 'language_code', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=15, blank=True))
+
         # Adding M2M table for field groups on 'Gallery'
         db.create_table('simplegallery_gallery_groups', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
@@ -15,12 +18,21 @@ class Migration(SchemaMigration):
             ('group', models.ForeignKey(orm['auth.group'], null=False))
         ))
         db.create_unique('simplegallery_gallery_groups', ['gallery_id', 'group_id'])
+
+        # Changing field 'ImageTranslation.language_code'
+        db.alter_column('simplegallery_image_translation', 'language_code', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=15, blank=True))
     
     
     def backwards(self, orm):
         
+        # Changing field 'GalleryTranslation.language_code'
+        db.alter_column('simplegallery_gallery_translation', 'language_code', self.gf('django.db.models.fields.CharField')(blank=True, max_length=5, db_index=True))
+
         # Removing M2M table for field groups on 'Gallery'
         db.delete_table('simplegallery_gallery_groups')
+
+        # Changing field 'ImageTranslation.language_code'
+        db.alter_column('simplegallery_image_translation', 'language_code', self.gf('django.db.models.fields.CharField')(blank=True, max_length=5, db_index=True))
     
     
     models = {
@@ -29,12 +41,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
             'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'blank': 'True'})
-        },
-        'auth.group_permissions': {
-            'Meta': {'unique_together': "(('group', 'permission'),)", 'object_name': 'Group_permissions'},
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'Group_permissions+'", 'to': "orm['auth.Group']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'permission': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'Group_permissions+'", 'to': "orm['auth.Permission']"})
         },
         'auth.permission': {
             'Meta': {'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
@@ -58,18 +64,6 @@ class Migration(SchemaMigration):
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'auth.user_groups': {
-            'Meta': {'unique_together': "(('user', 'group'),)", 'object_name': 'User_groups'},
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'User_groups+'", 'to': "orm['auth.Group']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'User_groups+'", 'to': "orm['auth.User']"})
-        },
-        'auth.user_user_permissions': {
-            'Meta': {'unique_together': "(('user', 'permission'),)", 'object_name': 'User_user_permissions'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'permission': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'User_user_permissions+'", 'to': "orm['auth.Permission']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'User_user_permissions+'", 'to': "orm['auth.User']"})
         },
         'cms.cmsplugin': {
             'Meta': {'object_name': 'CMSPlugin'},
@@ -191,12 +185,6 @@ class Migration(SchemaMigration):
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
-        },
-        'simplegallery.gallery_groups': {
-            'Meta': {'unique_together': "(('gallery', 'group'),)", 'object_name': 'Gallery_groups'},
-            'gallery': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'Gallery_groups+'", 'to': "orm['simplegallery.Gallery']"}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'Gallery_groups+'", 'to': "orm['auth.Group']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'simplegallery.gallerypublication': {
             'Meta': {'object_name': 'GalleryPublication', 'db_table': "'cmsplugin_gallerypublication'", '_ormbases': ['cms.CMSPlugin']},
