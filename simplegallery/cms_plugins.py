@@ -4,7 +4,7 @@ from django.conf import settings
 from cms.plugin_pool import plugin_pool
 from cms.plugin_base import CMSPluginBase
 from simplegallery.models import GalleryPublication, CarouselImage,\
-    CarouselFeature
+    CarouselFeature, Gallery
 from django.template.defaultfilters import title
 
 class SimpleGalleryPublicationPlugin(CMSPluginBase):
@@ -12,7 +12,7 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
     name = _("SimpleGallery Publication")
     render_template = "simplegallery/gallery_plugin.html"
     change_form_template = "simplegallery/plugin_form.html"
-    text_enabled = False 
+    text_enabled = False
     
     if not getattr(settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES', False):
         exclude = ('style',)
@@ -25,6 +25,18 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
             'placeholder': placeholder,
         })
         return context
+        
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        """
+        Get a form Field for a ForeignKey.
+        """
+        gallery = self.model.gallery.field
+        if request and db_field is gallery and not request.user.is_superuser:
+            kwargs['queryset'] = Gallery.objects.filter(groups__in=request.user.groups.all())
+        else:
+            kwargs['queryset'] = Gallery.objects.all()
+        return super(SimpleGalleryPublicationPlugin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        
     
     class PluginMedia:
         css = {
