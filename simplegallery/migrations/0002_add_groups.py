@@ -1,36 +1,56 @@
-
+# encoding: utf-8
+import datetime
 from south.db import db
+from south.v2 import SchemaMigration
 from django.db import models
-from simplegallery.models import *
 
-class Migration:
+class Migration(SchemaMigration):
     
     def forwards(self, orm):
         
-        # Alter field 'Gallery.name'
-        db.alter_column('simplegallery_gallery', 'name', orm['simplegallery.gallery:name'])
+        # Changing field 'GalleryTranslation.language_code'
+        db.alter_column('simplegallery_gallery_translation', 'language_code', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=15, blank=True))
+
+        # Adding M2M table for field groups on 'Gallery'
+        db.create_table('simplegallery_gallery_groups', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('gallery', models.ForeignKey(orm['simplegallery.gallery'], null=False)),
+            ('group', models.ForeignKey(orm['auth.group'], null=False))
+        ))
+        db.create_unique('simplegallery_gallery_groups', ['gallery_id', 'group_id'])
+
+        # Changing field 'ImageTranslation.language_code'
+        db.alter_column('simplegallery_image_translation', 'language_code', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=15, blank=True))
+    
     
     def backwards(self, orm):
         
-        # Deleting field 'Gallery.name'
-        db.delete_column('simplegallery_gallery', 'name')
-        
+        # Changing field 'GalleryTranslation.language_code'
+        db.alter_column('simplegallery_gallery_translation', 'language_code', self.gf('django.db.models.fields.CharField')(blank=True, max_length=5, db_index=True))
+
+        # Removing M2M table for field groups on 'Gallery'
+        db.delete_table('simplegallery_gallery_groups')
+
+        # Changing field 'ImageTranslation.language_code'
+        db.alter_column('simplegallery_image_translation', 'language_code', self.gf('django.db.models.fields.CharField')(blank=True, max_length=5, db_index=True))
     
     
     models = {
         'auth.group': {
+            'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
             'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'blank': 'True'})
         },
         'auth.permission': {
-            'Meta': {'unique_together': "(('content_type', 'codename'),)"},
+            'Meta': {'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
             'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         'auth.user': {
+            'Meta': {'object_name': 'User'},
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
@@ -46,6 +66,7 @@ class Migration:
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'cms.cmsplugin': {
+            'Meta': {'object_name': 'CMSPlugin'},
             'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'language': ('django.db.models.fields.CharField', [], {'max_length': '5', 'db_index': 'True'}),
@@ -63,6 +84,7 @@ class Migration:
             'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'})
         },
         'cms.page': {
+            'Meta': {'object_name': 'Page'},
             'changed_by': ('django.db.models.fields.CharField', [], {'max_length': '70'}),
             'created_by': ('django.db.models.fields.CharField', [], {'max_length': '70'}),
             'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
@@ -89,16 +111,18 @@ class Migration:
             'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'})
         },
         'contenttypes.contenttype': {
-            'Meta': {'unique_together': "(('app_label', 'model'),)", 'db_table': "'django_content_type'"},
+            'Meta': {'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'filer.file': {
+            'Meta': {'object_name': 'File'},
+            '_file': ('django.db.models.fields.files.FileField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             '_file_size': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             '_file_type_plugin_name': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
-            'file_field': ('django.db.models.fields.files.FileField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'folder': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'all_files'", 'null': 'True', 'to': "orm['filer.Folder']"}),
             'has_all_mandatory_data': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -109,20 +133,21 @@ class Migration:
             'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
         },
         'filer.folder': {
-            'Meta': {'unique_together': "(('parent', 'name'),)"},
+            'Meta': {'unique_together': "(('parent', 'name'),)", 'object_name': 'Folder'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'owned_folders'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'filer_owned_folders'", 'null': 'True', 'to': "orm['auth.User']"}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'children'", 'null': 'True', 'to': "orm['filer.Folder']"}),
             'rght': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
         },
         'filer.image': {
+            'Meta': {'object_name': 'Image', '_ormbases': ['filer.File']},
             '_height': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             '_width': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'author': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
@@ -135,13 +160,14 @@ class Migration:
             'subject_location': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '64', 'null': 'True', 'blank': 'True'})
         },
         'simplegallery.carouselfeature': {
-            'Meta': {'db_table': "'cmsplugin_carouselfeature'"},
+            'Meta': {'object_name': 'CarouselFeature', 'db_table': "'cmsplugin_carouselfeature'", '_ormbases': ['cms.CMSPlugin']},
             'aspect_ratio': ('django.db.models.fields.FloatField', [], {'default': '1'}),
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
             'interval': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '3'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'})
         },
         'simplegallery.carouselimage': {
+            'Meta': {'object_name': 'CarouselImage'},
             'carousel_feature': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['simplegallery.CarouselFeature']"}),
             'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
@@ -155,24 +181,29 @@ class Migration:
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
         'simplegallery.gallery': {
+            'Meta': {'object_name': 'Gallery'},
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
         },
         'simplegallery.gallerypublication': {
-            'Meta': {'db_table': "'cmsplugin_gallerypublication'"},
+            'Meta': {'object_name': 'GalleryPublication', 'db_table': "'cmsplugin_gallerypublication'", '_ormbases': ['cms.CMSPlugin']},
             'aspect_ratio': ('django.db.models.fields.FloatField', [], {'default': '1'}),
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
-            'gallery': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['simplegallery.Gallery']"})
+            'gallery': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['simplegallery.Gallery']"}),
+            'interval': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
+            'style': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'})
         },
         'simplegallery.gallerytranslation': {
-            'Meta': {'unique_together': "(('language_id', 'master'),)", 'db_table': "'simplegallery_gallery_translation'"},
+            'Meta': {'unique_together': "(('language_code', 'master'),)", 'object_name': 'GalleryTranslation', 'db_table': "'simplegallery_gallery_translation'"},
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
+            'language_code': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '15', 'blank': 'True'}),
             'master': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'translations'", 'to': "orm['simplegallery.Gallery']"}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         },
         'simplegallery.image': {
+            'Meta': {'object_name': 'Image'},
             'gallery': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['simplegallery.Gallery']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']"}),
@@ -180,15 +211,15 @@ class Migration:
             'page_link': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Page']", 'null': 'True', 'blank': 'True'})
         },
         'simplegallery.imagetranslation': {
-            'Meta': {'unique_together': "(('language_id', 'master'),)", 'db_table': "'simplegallery_image_translation'"},
+            'Meta': {'unique_together': "(('language_code', 'master'),)", 'object_name': 'ImageTranslation', 'db_table': "'simplegallery_image_translation'"},
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
+            'language_code': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '15', 'blank': 'True'}),
             'master': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'translations'", 'to': "orm['simplegallery.Image']"}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         },
         'sites.site': {
-            'Meta': {'db_table': "'django_site'"},
+            'Meta': {'object_name': 'Site', 'db_table': "'django_site'"},
             'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
