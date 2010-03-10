@@ -9,6 +9,16 @@ import multilingual
 
 from filer.fields.image import FilerImageField
 
+# quick and dirty fix
+from django.db.models.signals import post_save, post_delete
+from django.core.cache import cache
+def invalidate_cache(sender, instance, **kwargs):
+    from simplegallery.admin import PAGE_LINK_CACHE_KEY
+    cache.delete(PAGE_LINK_CACHE_KEY)
+post_save.connect(invalidate_cache, sender=Page)
+post_delete.connect(invalidate_cache, sender=Page)
+# end quick and dirty fix
+
 CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES',() )
 
 class Gallery(models.Model):

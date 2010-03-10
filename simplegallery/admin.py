@@ -4,8 +4,25 @@ from django.utils.functional import curry
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import Group
 from django import forms
-from multilingual.admin import MultilingualInlineAdmin, MultilingualModelAdmin, MultilingualModelAdminForm
+from multilingual.admin import (
+    MultilingualInlineAdmin, MultilingualModelAdmin, MultilingualModelAdminForm,
+    MultilingualInlineModelForm
+)
+from cms.models import Page
 from simplegallery.models import Gallery, Image
+from django.core.cache import cache
+
+PAGE_LINK_CACHE_KEY = 'sg_ii_pl_qs' # simple gallery image inline page link query set
+
+class ImageInlineForm(MultilingualInlineModelForm):
+    def clean_page_link(self):
+        pageid = self.cleaned_data['page_link']
+        page = Page.objects.get(pk=pageid)
+        return page
+    
+    class Meta:
+        model = Image
+
 
 class ImageInline(MultilingualInlineAdmin):
     model = Image
@@ -13,10 +30,30 @@ class ImageInline(MultilingualInlineAdmin):
     extra = 4 
     max_num = 40
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
+    form = ImageInlineForm
     
     def get_formset(self, request, obj=None, **kwargs):
         formset = super(ImageInline, self).get_formset(request, obj, **kwargs)
-        formset.form.base_fields['page_link'].queryset = formset.form.base_fields['page_link'].queryset.drafts()
+        choices = cache.get(PAGE_LINK_CACHE_KEY)
+        if choices is None:
+            current_site = None
+            choices = [('', '----')]
+            current = []
+            for page in formset.form.base_fields['page_link'].queryset.drafts():
+                if page.site != current_site:
+                    if current:
+                        choices.append((current_site.name, current))
+                        current = []
+                    current_site = page.site
+                current.append((page.pk, unicode(page)))
+            if current:
+                choices.append((current_site.name, current))
+            cache.set(PAGE_LINK_CACHE_KEY, choices, 86400)
+        #class PseudoQuerySet(list):
+        #    def all(self):
+        #        return self
+        #formset.form.base_fields['page_link'].queryset = PseudoQuerySet(qs)
+        formset.form.base_fields['page_link'] = forms.ChoiceField(choices=choices)
         return formset
     
     
@@ -76,7 +113,7 @@ class GalleryAdmin(MultilingualModelAdmin):
         qs = super(GalleryAdmin, self).queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(groups__in=request.user.groups.all())
+        return qs.filter(groups__in=request.user.groups.all()).distinct()
     
     def get_form(self, request, obj=None, **kwargs):
         form = super(GalleryAdmin, self).get_form(request, obj=None, **kwargs)
