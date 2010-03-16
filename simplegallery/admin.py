@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin.util import flatten_fieldsets
 from django.utils.functional import curry
 from django.forms.models import inlineformset_factory
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
 from django import forms
 from multilingual.admin import (
@@ -18,7 +19,7 @@ class ImageInlineForm(MultilingualInlineModelForm):
     def clean_page_link(self):
         pageid = self.cleaned_data.get('page_link','')
         if not pageid:
-            return ''
+            return None
         page = Page.objects.get(pk=pageid)
         return page
     
@@ -51,11 +52,7 @@ class ImageInline(MultilingualInlineAdmin):
             if current:
                 choices.append((current_site.name, current))
             cache.set(PAGE_LINK_CACHE_KEY, choices, 86400)
-        #class PseudoQuerySet(list):
-        #    def all(self):
-        #        return self
-        #formset.form.base_fields['page_link'].queryset = PseudoQuerySet(qs)
-        formset.form.base_fields['page_link'] = forms.ChoiceField(choices=choices, required=False)
+        formset.form.base_fields['page_link'] = forms.ChoiceField(choices=choices, required=False, label=_("page link"))
         return formset
     
     
