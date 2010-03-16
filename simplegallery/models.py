@@ -69,7 +69,7 @@ aspect_ratio_choices = getattr(settings, "IMAGE_ASPECT_RATIO_CHOICES", (
 class GalleryPublication(CMSPlugin):
     gallery = models.ForeignKey(Gallery)
     interval = models.PositiveSmallIntegerField(_('interval'), default=0)
-    style = models.CharField(_("teaser style"), max_length=255, blank=True, choices=CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES)
+    style = models.CharField(_("gallery style"), max_length=255, blank=True, choices=CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES)
     aspect_ratio = models.FloatField(_('aspect ratio'), choices=aspect_ratio_choices, default=1)
     
     def __unicode__(self):

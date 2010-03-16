@@ -16,7 +16,9 @@ PAGE_LINK_CACHE_KEY = 'sg_ii_pl_qs' # simple gallery image inline page link quer
 
 class ImageInlineForm(MultilingualInlineModelForm):
     def clean_page_link(self):
-        pageid = self.cleaned_data['page_link']
+        pageid = self.cleaned_data.get('page_link','')
+        if not pageid:
+            return ''
         page = Page.objects.get(pk=pageid)
         return page
     
@@ -53,7 +55,7 @@ class ImageInline(MultilingualInlineAdmin):
         #    def all(self):
         #        return self
         #formset.form.base_fields['page_link'].queryset = PseudoQuerySet(qs)
-        formset.form.base_fields['page_link'] = forms.ChoiceField(choices=choices)
+        formset.form.base_fields['page_link'] = forms.ChoiceField(choices=choices, required=False)
         return formset
     
     
