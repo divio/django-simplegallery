@@ -53,7 +53,9 @@ class Image(models.Model):
         verbose_name_plural = _('images')
 
     def __unicode__(self):
-        return self.title
+        if isinstance(self.title, basestring):
+            return self.title
+        return unicode(self.pk)
 
     @property
     def file(self):
