@@ -32,7 +32,7 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
         """
         gallery = self.model.gallery.field
         if request and db_field is gallery and not request.user.is_superuser:
-            kwargs['queryset'] = Gallery.objects.filter(groups__in=request.user.groups.all())
+            kwargs['queryset'] = Gallery.objects.filter(groups__in=request.user.groups.all()).distinct()
         else:
             kwargs['queryset'] = Gallery.objects.all()
         return super(SimpleGalleryPublicationPlugin, self).formfield_for_foreignkey(db_field, request, **kwargs)
