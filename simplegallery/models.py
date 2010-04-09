@@ -5,7 +5,7 @@ from django.conf import settings
 from cms.models import Page
 from cms.models import CMSPlugin
 from django.utils.text import truncate_words
-import multilingual
+from multilingual.translation import TranslationModel
 
 from filer.fields.image import FilerImageField
 
@@ -26,7 +26,7 @@ class Gallery(models.Model):
         help_text=_("A unique identifier for this gallery, this will only be used in the admin panel."))
     groups = models.ManyToManyField('auth.Group')
     
-    class Translation(multilingual.Translation):
+    class Translation(TranslationModel):
         title = models.CharField(max_length=255, null=True, blank=True)
         description = models.TextField(null=True, blank=True)
 
@@ -43,7 +43,7 @@ class Image(models.Model):
     page_link = models.ForeignKey(Page, verbose_name=_('page link'), null=True, blank=True)
     ordering = models.IntegerField(null=True, blank=True)
     
-    class Translation(multilingual.Translation):
+    class Translation(TranslationModel):
         title = models.CharField(_('title'), max_length=255, null=True, blank=True)
         description = models.TextField(_('description'), null=True, blank=True)
 
