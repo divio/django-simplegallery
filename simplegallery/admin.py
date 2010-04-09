@@ -11,21 +11,6 @@ from multilingual.admin import (
 )
 from cms.models import Page
 from simplegallery.models import Gallery, Image
-from django.core.cache import cache
-
-PAGE_LINK_CACHE_KEY = 'sg_ii_pl_qs' # simple gallery image inline page link query set
-
-class ImageInlineForm(MultilingualInlineModelForm):
-    def clean_page_link(self):
-        pageid = self.cleaned_data.get('page_link','')
-        if not pageid:
-            return None
-        page = Page.objects.get(pk=pageid)
-        return page
-    
-    class Meta:
-        model = Image
-
 
 class ImageInline(MultilingualInlineAdmin):
     model = Image
@@ -33,28 +18,6 @@ class ImageInline(MultilingualInlineAdmin):
     extra = 4 
     max_num = 40
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
-    form = ImageInlineForm
-    
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super(ImageInline, self).get_formset(request, obj, **kwargs)
-        choices = cache.get(PAGE_LINK_CACHE_KEY)
-        if choices is None:
-            current_site = None
-            choices = [('', '----')]
-            current = []
-            for page in formset.form.base_fields['page_link'].queryset.drafts():
-                if page.site != current_site:
-                    if current:
-                        choices.append((current_site.name, current))
-                        current = []
-                    current_site = page.site
-                current.append((page.pk, unicode(page)))
-            if current:
-                choices.append((current_site.name, current))
-            cache.set(PAGE_LINK_CACHE_KEY, choices, 86400)
-        formset.form.base_fields['page_link'] = forms.ChoiceField(choices=choices, required=False, label=_("page link"))
-        return formset
-    
     
 class GalleryAdminForm(MultilingualModelAdminForm):
     current_request = None

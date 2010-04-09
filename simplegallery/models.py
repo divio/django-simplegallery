@@ -2,29 +2,21 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
+from django.contrib.auth.models import Group
 from cms.models import Page
 from cms.models import CMSPlugin
+from cms.models.fields import PageField
 from django.utils.text import truncate_words
 from multilingual.translation import TranslationModel
 
 from filer.fields.image import FilerImageField
-
-# quick and dirty fix
-from django.db.models.signals import post_save, post_delete
-from django.core.cache import cache
-def invalidate_cache(sender, instance, **kwargs):
-    from simplegallery.admin import PAGE_LINK_CACHE_KEY
-    cache.delete(PAGE_LINK_CACHE_KEY)
-post_save.connect(invalidate_cache, sender=Page)
-post_delete.connect(invalidate_cache, sender=Page)
-# end quick and dirty fix
 
 CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES',() )
 
 class Gallery(models.Model):
     name = models.CharField(max_length=255, unique=True,
         help_text=_("A unique identifier for this gallery, this will only be used in the admin panel."))
-    groups = models.ManyToManyField('auth.Group')
+    groups = models.ManyToManyField(Group)
     
     class Translation(TranslationModel):
         title = models.CharField(max_length=255, null=True, blank=True)
@@ -40,7 +32,7 @@ class Gallery(models.Model):
 class Image(models.Model):
     gallery = models.ForeignKey(Gallery, related_name="images")
     image = FilerImageField()
-    page_link = models.ForeignKey(Page, verbose_name=_('page link'), null=True, blank=True)
+    page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
     ordering = models.IntegerField(null=True, blank=True)
     
     class Translation(TranslationModel):
@@ -85,7 +77,7 @@ class CarouselImage(models.Model):
     description = models.TextField(_('description'), null=True, blank=True)
     title_2 = models.CharField(_('title 2'), max_length=150, null=True, blank=True)
     description_2 = models.TextField(_('description 2'), null=True, blank=True)
-    page_link = models.ForeignKey(Page, verbose_name=_('page link'), null=True, blank=True)
+    page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
     url = models.URLField(_('URL'), blank=True, \
         help_text=_('If the %(page_link)s field is not used, you can enter an external URL here.') % {'page_link': _('page link')})
     ordering = models.PositiveSmallIntegerField(_('ordering'), null=True, blank=True)
