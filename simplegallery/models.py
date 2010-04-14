@@ -66,9 +66,6 @@ class GalleryPublication(CMSPlugin):
     style = models.CharField(_("gallery style"), max_length=255, blank=True, choices=CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES)
     aspect_ratio = models.FloatField(_('aspect ratio'), choices=aspect_ratio_choices, default=1)
     
-    def __unicode__(self):
-        return u"publication of %s on %s" % (self.gallery, self.page)
-    
 class CarouselImage(models.Model):
     carousel_feature = models.ForeignKey('CarouselFeature', related_name="images")
     image = FilerImageField()
