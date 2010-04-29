@@ -3,23 +3,23 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: simplegallery\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 11:15+0200\n"
-"PO-Revision-Date: 2009-06-24 11:48+0100\n"
-"Last-Translator: Maik Lustenberger <maik.lustenberger@divio.ch>\n"
-"Language-Team: Divio Developers <developers@divio.ch>\n"
+"POT-Creation-Date: 2010-04-28 11:31+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: SWITZERLAND\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: cms_plugins.py:12
 msgid "SimpleGallery Publication"
-msgstr "Galerie"
+msgstr ""
 
 #: cms_plugins.py:63
 msgid "carousel image feature"
@@ -33,11 +33,11 @@ msgstr ""
 
 #: models.py:26
 msgid "gallery"
-msgstr "Galerie"
+msgstr ""
 
 #: models.py:27
 msgid "galleries"
-msgstr "Galerien"
+msgstr ""
 
 #: models.py:35 models.py:77 models.py:79
 msgid "page link"
@@ -45,28 +45,27 @@ msgstr ""
 
 #: models.py:39 models.py:73 models.py:101
 msgid "title"
-msgstr "Titel"
+msgstr ""
 
 #: models.py:40 models.py:74
 msgid "description"
-msgstr "Beschreib"
+msgstr ""
 
 #: models.py:44
 msgid "image"
-msgstr "Bild"
+msgstr ""
 
 #: models.py:45
 msgid "images"
-msgstr "Bilder"
+msgstr ""
 
 #: models.py:65 models.py:102
 msgid "interval"
 msgstr ""
 
 #: models.py:66
-#, fuzzy
 msgid "gallery style"
-msgstr "Galerie"
+msgstr ""
 
 #: models.py:67 models.py:103
 msgid "aspect ratio"
@@ -77,14 +76,12 @@ msgid "date"
 msgstr ""
 
 #: models.py:75
-#, fuzzy
 msgid "title 2"
-msgstr "Titel"
+msgstr ""
 
 #: models.py:76
-#, fuzzy
 msgid "description 2"
-msgstr "Beschreib"
+msgstr ""
 
 #: models.py:78
 msgid "URL"
@@ -114,4 +111,4 @@ msgstr ""
 
 #: templates/simplegallery/gallery_plugin.html:39
 msgid "enlarge"
-msgstr "vergrössern"
+msgstr ""
