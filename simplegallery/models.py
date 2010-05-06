@@ -11,6 +11,8 @@ from multilingual.translation import TranslationModel
 
 from filer.fields.image import FilerImageField
 
+from simplegallery.fields import AspectRatioField
+
 CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES',() )
 
 class Gallery(models.Model):
@@ -65,6 +67,7 @@ class GalleryPublication(CMSPlugin):
     interval = models.PositiveSmallIntegerField(_('interval'), default=0)
     style = models.CharField(_("gallery style"), max_length=255, blank=True, choices=CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES)
     aspect_ratio = models.FloatField(_('aspect ratio'), choices=aspect_ratio_choices, default=1)
+    raw_aspect_ratio = AspectRatioField(null=True, blank=True)
     
     def __unicode__(self):
         return u"publication of %s on %s" % (self.gallery, self.page)
