@@ -30,12 +30,19 @@ class Gallery(models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    def has_drop_up(self):
+        if not hasattr(self, '_has_drop_up'):
+            self._has_drop_up = bool(self.images.filter(drop_up_links__isnull=False).count())
+        return self._has_drop_up
+        
 
 class Image(models.Model):
     gallery = models.ForeignKey(Gallery, related_name="images")
     image = FilerImageField()
     page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
     ordering = models.IntegerField(null=True, blank=True)
+    drop_up_links = models.ManyToManyField('sites.Site', blank=True)
     
     class Translation(TranslationModel):
         title = models.CharField(_('title'), max_length=255, null=True, blank=True)

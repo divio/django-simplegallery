@@ -4,6 +4,7 @@ from django.utils.functional import curry
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
+from django.contrib.sites.models import Site
 from django import forms
 from multilingual.admin import (
     MultilingualInlineAdmin, MultilingualModelAdmin, MultilingualModelAdminForm,
@@ -12,12 +13,22 @@ from multilingual.admin import (
 from cms.models import Page
 from simplegallery.models import Gallery, Image
 
+
+class ImageInlineForm(MultilingualInlineModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ImageInlineForm, self).__init__(*args, **kwargs)
+        choices = [(s.id, s.name) for s in Site.objects.all()]
+        self.fields['drop_up_links'].widget = forms.SelectMultiple(choices=choices)
+
+
 class ImageInline(MultilingualInlineAdmin):
     model = Image
+    form = ImageInlineForm
     num_in_admin = 20 
     extra = 4 
     max_num = 40
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
+    
     
 class GalleryAdminForm(MultilingualModelAdminForm):
     current_request = None

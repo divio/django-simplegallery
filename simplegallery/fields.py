@@ -14,7 +14,9 @@ class AspectRatioFormField(RegexField):
         self.localize = True
     
     def localize_value(self, value):
-        return '%s:%s' % tuple(value)
+        if value:
+            return '%s:%s' % tuple(value)
+        return value
  
 
 class AspectRatioField(models.CharField):
