@@ -72,9 +72,7 @@ class GalleryPublication(CMSPlugin):
     def get_aspect_ratio(self):
         if self.raw_aspect_ratio:
             x,y = self.raw_aspect_ratio
-            result = float(y) / float(x)
-            print result
-            return result
+            return float(x) / float(y)
         return self.aspect_ratio
     
 class CarouselImage(models.Model):

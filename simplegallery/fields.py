@@ -1,4 +1,4 @@
-from django.db.models.fields import CharField
+from django.db import models
 from django.forms.fields import RegexField
 from django.utils.translation import ugettext_lazy
 from django.utils.encoding import smart_unicode
@@ -17,9 +17,10 @@ class AspectRatioFormField(RegexField):
         return '%s:%s' % tuple(value)
  
 
-class AspectRatioField(CharField):
+class AspectRatioField(models.CharField):
+    __metaclass__ = models.SubfieldBase
+    
     def to_python(self, value):
-        print value
         if isinstance(value, list):
             return value
         if isinstance(value, basestring):
@@ -36,7 +37,6 @@ class AspectRatioField(CharField):
         return self.to_python(smart_unicode(value))
 
     def get_prep_value(self, value):
-        print value
         if isinstance(value, list):
             return '%s:%s' % tuple(value)
         if isinstance(value, basestring):
