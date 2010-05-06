@@ -94,5 +94,5 @@ def get_image_size(context, instance):
             width = instance.image.width
         except:
             width = 100
-    height = int(float(width) / instance.aspect_ratio)
+    height = int(float(width) / instance.get_aspect_ratio())
     return (u'%sx%s' % (width, height), width, height)

@@ -67,7 +67,15 @@ class GalleryPublication(CMSPlugin):
     interval = models.PositiveSmallIntegerField(_('interval'), default=0)
     style = models.CharField(_("gallery style"), max_length=255, blank=True, choices=CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES)
     aspect_ratio = models.FloatField(_('aspect ratio'), choices=aspect_ratio_choices, default=1)
-    raw_aspect_ratio = AspectRatioField(null=True, blank=True)
+    raw_aspect_ratio = AspectRatioField(null=True, blank=True, max_length=20)
+    
+    def get_aspect_ratio(self):
+        if self.raw_aspect_ratio:
+            x,y = self.raw_aspect_ratio
+            result = float(y) / float(x)
+            print result
+            return result
+        return self.aspect_ratio
     
 class CarouselImage(models.Model):
     carousel_feature = models.ForeignKey('CarouselFeature', related_name="images")
