@@ -52,11 +52,6 @@ class CarouselImageInline(admin.StackedInline):
     model = CarouselImage
     fk_name = 'carousel_feature'
     extra = 1
-    
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super(CarouselImageInline, self).get_formset(request, obj, **kwargs)
-        formset.form.base_fields['page_link'].queryset = formset.form.base_fields['page_link'].queryset.drafts()
-        return formset
 
 class CarouselFeaturePlugin(CMSPluginBase):
     model = CarouselFeature
