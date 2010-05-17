@@ -120,3 +120,6 @@ class CarouselFeature(CMSPlugin):
     
     def __unicode__(self):
         return truncate_words(self.title, 3)[:20] + "..."
+    
+    def get_aspect_ratio(self):
+        return self.aspect_ratio

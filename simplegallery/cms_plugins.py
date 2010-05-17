@@ -71,7 +71,6 @@ class CarouselFeaturePlugin(CMSPluginBase):
             'image_size': get_image_size(context, instance),
             'placeholder': placeholder,
         })
-        print get_image_size(context, instance)
         return context
     
     class PluginMedia:
