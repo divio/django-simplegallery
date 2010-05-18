@@ -63,7 +63,7 @@ class GalleryAdmin(MultilingualModelAdmin):
         ImageInline,
     ]
     list_display = ('name', 'description', 'display_groups')
-    search_fields = ('translations__title','translations__description',)
+    search_fields = ('name', 'translations__title','translations__description',)
     # using ordering somehow results in double querysets
 #    ordering = ('translations__title', )
     use_fieldsets = (
