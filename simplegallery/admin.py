@@ -29,6 +29,9 @@ class ImageInline(MultilingualInlineAdmin):
     max_num = 40
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
     
+    def queryset(self, request):
+        return self.model._default_manager.all()
+    
     
 class GalleryAdminForm(MultilingualModelAdminForm):
     current_request = None
