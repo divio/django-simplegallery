@@ -26,7 +26,6 @@ class ImageInline(MultilingualInlineAdmin):
     form = ImageInlineForm
     num_in_admin = 20 
     extra = 4 
-    max_num = 40
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
     
     def queryset(self, request):
