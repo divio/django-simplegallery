@@ -36,15 +36,13 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
         else:
             kwargs['queryset'] = Gallery.objects.all()
         return super(SimpleGalleryPublicationPlugin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-        
-    
+
+    """
     class PluginMedia:
         css = {
-            'all': ('%scss/jquery.lightbox-0.5.css' % settings.MEDIA_URL,)
+            'all': ('%ssimplegallery/css/simplegallery.css' % settings.MEDIA_URL,)
         }
-        js = ('%ssimplegallery/js/jquery.cycle.min.js'% settings.MEDIA_URL,
-              '%ssimplegallery/js/jquery.cycle.trans.min.js'% settings.MEDIA_URL,
-              '%ssimplegallery/js/jquery.lightbox-0.5.min.js'% settings.MEDIA_URL,)
+    """
  
 plugin_pool.register_plugin(SimpleGalleryPublicationPlugin)
 
@@ -74,9 +72,10 @@ class CarouselFeaturePlugin(CMSPluginBase):
         return context
     
     class PluginMedia:
+        '''
         js = ('%ssimplegallery/js/jquery.cycle.min.js'% settings.MEDIA_URL,
               '%ssimplegallery/js/jquery.cycle.trans.min.js'% settings.MEDIA_URL,)
- 
+        '''
 plugin_pool.register_plugin(CarouselFeaturePlugin)
 
 def get_image_size(context, instance):

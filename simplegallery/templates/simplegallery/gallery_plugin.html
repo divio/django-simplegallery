@@ -1,46 +1,44 @@
-{% load i18n thumbnail %}
-
+{% load i18n thumbnail sekizai_tags %}
+{% addtoblock "css" %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}simplegallery/css/jquery.simplegallery.css" media="screen, projection" />{% endaddtoblock "css" %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.cycle-2.88.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.simplegallery.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}
 <script type="text/javascript">
 //<![CDATA[
-	$(function() {
-	    $('#simplegallery_{{ instance.id }} .gallery_content .holder a.plus').lightBox({fixedNavigation:true,containerResizeSpeed: 0});
-		$('#simplegallery_{{ instance.id }} .gallery_content .holder a.pic').lightBox({fixedNavigation:true,containerResizeSpeed: 0});
-	
-		$('#simplegallery_{{ instance.id }} .gallery_content').cycle({
-	        fx:    'scrollLeft',
-	        speed:  '900',
-	        timeout: 10000,
-	        pager:  '#simplegallery_{{ instance.id }} .gallery_nav',
-	        pagerAnchorBuilder: function(idx, slide) {
-	            return '#simplegallery_{{ instance.id }} .gallery_nav li:eq(' + (idx) + ') a';
-	        }		
+jQuery(document).ready(function ($) {
+	setTimeout(function () {
+		$('#simplegallery_{{ instance.id }}').simpleGallery({
+			timeout: {{ instance.interval }}*1000
 		});
-		$('#simplegallery_{{ instance.id }} .gallery_content .holder a.plus').click(function() { 
-		    $('#simplegallery_{{ instance.id }} .gallery_content').cycle('pause');
-		});
-		$('#simplegallery_{{ instance.id }} .gallery_content .holder a.pic').click(function() { 
-		    $('#simplegallery_{{ instance.id }} .gallery_content').cycle('pause'); 
-		});
-		$('#simplegallery_{{ instance.id }} .gallery_nav li a').click(function() { 
-	    	$('#simplegallery_{{ instance.id }} .gallery_content').cycle('resume'); 
-		});
-	});
+	}, 1000);
+});
 //]]>
 </script>
-	
-<!--[if IE 6]>	
-	<script type="text/javascript">	
-		DD_belatedPNG.fix('#simplegallery_{{ instance.id }} .gallery_content .holder .plus');
-	</script>		
-<![endif]-->
-<div class="simplegallery clearfix" id="simplegallery_{{ instance.id }}">
-	<div class="gallery_content"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %}>{% for image in gallery.images.all %}
-        <div class="holder">
-            <a href="{% thumbnail image.image 800x600 %}" class="plus">{% trans 'enlarge' %}</a>
-            <a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape }}" class="pic"><img src="{% thumbnail image.image image_size.0 crop,upscale %}" alt="{{ image.description|escape }}" /></a>
-        </div>{% endfor %}
-    </div>				
-    <ul class="gallery_nav clearfix">{% for image in gallery.images.all %}
-        <li{% if forloop.first %} class="first"{% endif %}><a href="#"><img src="{% thumbnail image.image 50x40 crop%}" title="{{ image.title }}" alt="{{ image.description }}" /></a></li>{% endfor %}
-    </ul>
+{% endaddtoblock %}
+
+{% if gallery.title %}<h2>{{ gallery.title }}</h2>{% endif %}
+{% if gallery.description %}<p>{{ gallery.description }}</p>{% endif %}
+
+<!-- start: gallery -->
+<div class="plugin_simplegallery clearfix" id="simplegallery_{{ instance.id }}">
+	<div class="simplegallery_fullview">
+		<p class="fv-nav"><a href="#prev" class="fv-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="fv-next">{% trans "Next &raquo;" %}</a></p>
+		<p class="fv-magnifier"><a href="#zoom"><abbr title="{% trans 'Zoom in' %}">+</abbr></a></p>
+		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
+		<div class="fv-caption"><p>&nbsp;</p></div>
+		<ul>
+		{% for image in gallery.images.all %}
+			<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}" alt="{{ image.description|escape }}" /></a></li>
+		{% endfor %}
+		</ul>
+	</div>
+	<div class="simplegallery_thumbnails">
+		<p class="thmb-nav"><a href="#prev" class="thmb-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="thmb-next">{% trans "Next &raquo;" %}</a></p>
+		<ul>
+			{% for image in gallery.images.all %}
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape }}"><img src="{% thumbnail image.image 50x40 crop %}" alt="{{ image.description|escape }}" /></a></li>
+			{% endfor %}
+		</ul>
+	</div>
 </div>
+<!-- end: gallery -->{% comment %}{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %}{% endcomment %}
