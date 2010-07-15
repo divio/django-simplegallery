@@ -1,0 +1,66 @@
+@charset "utf-8";
+/**
+ * @author		Angelo Dini
+ * @copyright	http://www.divio.ch
+ */
+
+/*##################################################|*/
+/* #PLUGIN SIMPLEGALLERY# */
+.plugin_simplegallery { margin:0 0 15px; }
+
+/* gallery container */
+.simplegallery_fullview { position:relative; left:0; top:0; z-index:20; overflow:hidden; margin:5px; }
+.simplegallery_fullview ul { list-style:none; padding:0; margin:0; }
+.simplegallery_fullview ul li { padding:0; margin:0; zoom:1; }
+
+/* thumbnail container */
+.simplegallery_thumbnails { position:relative; left:0; top:0; z-index:21; overflow:hidden; }
+.simplegallery_thumbnails ul { display:none; list-style:none; padding:0; margin:0; }
+.simplegallery_thumbnails ul li { float:left; line-height:0; padding:0; margin:0 0 0 2px; zoom:1; }
+.simplegallery_thumbnails ul li a { float:left; border:3px solid #fff; }
+.simplegallery_thumbnails ul li a:hover { border:3px solid #ccc; }
+.simplegallery_thumbnails ul li.active a { border:3px solid #000; }
+
+/* gallery navigation */
+.fv-nav { display:none; position:absolute; left:0; top:46%; z-index:21; width:100%; padding:0; margin:0; }
+.fv-nav-disabled { color:#ccc !important; cursor:normal; }
+.fv-nav-disabled:hover { color:#ccc !important; background:#fff !important; }
+
+.fv-prev { float:left; }
+.fv-next { float:right; }
+.fv-prev, .fv-next { display:block; font-size:14px; color:#000; text-decoration:none !important; padding:5px 10px; background:#fff; }
+.fv-prev:hover, .fv-next:hover { color:#fff; background:#000; }
+
+/* thumbnail navigation */
+.thmb-nav { display:none; }
+.thmb-nav a { display:block; position:absolute; top:13px; z-index:21; color:#fff; text-decoration:none;
+			  padding:0 5px; background:#000; }
+.thmb-nav a:hover { color:#000; background:#fff; }
+.thmb-nav .thmb-prev { left:10px; }
+.thmb-nav .thmb-next { right:0; }
+
+.thmb_cycle li { height:46px; } /* prevent loading errors */
+
+/* thumbnail container nummeric */
+.thmb-nummeric { position:absolute; right:15px; bottom:35px; z-index:22; }
+.thmb-nummeric li a { color:#fff; text-decoration:none; padding-right:2px; line-height:1.6; border:none !important; }
+.thmb-nummeric li a:hover { border:none !important; }
+.thmb-nummeric li.active a { font-weight:bold; border:none !important; }
+
+/* controls*/
+.fv-controls { display:none;  position:absolute; left:45px; top:15px; z-index:22; }
+.fv-controls a { float:left; font-size:10px; color:#666; line-height:1.5; text-decoration:none; padding:0 5px; margin-right:10px; background:#fff; }
+.fv-controls a:hover { color:#fff; background:#000; }
+.fv-controls .active { color:#000; }
+
+/* gallery caption */
+.fv-caption { display:none; position:absolute; left:0; bottom:0; z-index:20; height:30%; width:100%; background:rgba(0, 0, 0, 0.5); }
+.fv-caption p { padding:20px 25px; color:#fff; }
+.fv-caption p span { display:block; font-size:16px; font-weight:bold; line-height:1.8; }
+
+/* gallery lightbox effect */
+.fv-magnifier { display:none; position:absolute; left:15px; top:15px; z-index:22; text-align:center; }
+.fv-magnifier a { display:block; color:#000; font-size:10px; color:#666; line-height:1.2; text-decoration:none;
+				  width:15px; height:15px; background:#fff; }
+.fv-magnifier a:hover { color:#fff; background:#000; }
+.fv-magnifier a abbr { cursor:pointer; border:none; }
