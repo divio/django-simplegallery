@@ -1,3 +1,14 @@
+0.11.0a1
+========
+Backwards incompatible changes!
+ * added django-sekizai dependency
+ * added django-tinymce dependency
+ * default stylesheets and html structure changed, files renamed
+
+Added detail change view for images in Gallery
+No more `null=True` on `CharFields` and `TextFields` (used `blank=True, default=''` instead)
+
+
 0.10.0a
 =======
 Changed image fields from image_filer to filer (backwards incompatible change)
