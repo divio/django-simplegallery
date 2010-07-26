@@ -1,37 +1,45 @@
 from django.contrib import admin
-from django.contrib.admin.util import flatten_fieldsets
-from django.utils.functional import curry
-from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import Group
+from django.utils.safestring import mark_safe
 from django.contrib.sites.models import Site
 from django import forms
+from django.core import urlresolvers
+from django.http import HttpResponse
 from multilingual.admin import (
     MultilingualInlineAdmin, MultilingualModelAdmin, MultilingualModelAdminForm,
     MultilingualInlineModelForm
 )
-from cms.models import Page
 from simplegallery.models import Gallery, Image
 
+class ReadOnlyLinkWidget(forms.Widget):
+    def render(self, name, value, attrs=None):
+        if value:
+            return mark_safe(u'<a href="%s" onclick="return showRelatedObjectLookupPopup(this);">%s</a>' % (value, _('edit')))
+        else:
+            return u''
 
 class ImageInlineForm(MultilingualInlineModelForm):
+    admin_edit_url = forms.URLField(label=_('detail edit'), required=False,widget=ReadOnlyLinkWidget)
     def __init__(self, *args, **kwargs):
         super(ImageInlineForm, self).__init__(*args, **kwargs)
-        choices = [(s.id, s.name) for s in Site.objects.all()]
-        self.fields['drop_up_links'].widget = forms.SelectMultiple(choices=choices)
-
-
-class ImageInline(MultilingualInlineAdmin):
+        if self.instance and self.instance.id:
+            self.fields['admin_edit_url'].initial = urlresolvers.reverse('admin:simplegallery_image_change', args=(self.instance.id,))
+    class Meta:
+        model = Image
+    
+class ImageInline(admin.TabularInline):#MultilingualInlineAdmin):
     model = Image
     form = ImageInlineForm
     num_in_admin = 20 
     extra = 4 
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
-    
+    fields = ('image','page_link','ordering','admin_edit_url',)
+    #readonly_fields = ('admin_edit_url',)
     def queryset(self, request):
         return self.model._default_manager.all()
-    
-    
+    def edit_detail_link(self, obj):
+        return '<a href="#">go bronkos!</a>'
+
 class GalleryAdminForm(MultilingualModelAdminForm):
     current_request = None
     class Meta:
@@ -95,4 +103,55 @@ class GalleryAdmin(MultilingualModelAdmin):
         form.current_request = request
         return form
 
+class ReadOnlyImageWidget(forms.Widget):
+    def render(self, name, value, attrs=None):
+        if value:
+            return mark_safe(u'<img src="%s" alt="" />' % (value,))
+        else:
+            return u''
+
+class ImageDetailForm(MultilingualModelAdminForm):
+    image_preview = forms.Field(label=_('image'), required=False, widget=ReadOnlyImageWidget)
+    def __init__(self, *args, **kwargs):
+        super(ImageDetailForm, self).__init__(*args, **kwargs)
+        choices = [(s.id, s.name) for s in Site.objects.all()]
+        self.fields['drop_up_links'].widget.choices = choices
+        if self.instance and self.instance.id and self.instance.image:
+            self.fields['image_preview'].initial = self.instance.image.icons['64']
+
+class ImageDetailAdmin(MultilingualModelAdmin):
+    form = ImageDetailForm
+    use_fieldsets= (
+        (None, {'fields': ('gallery','image_preview',)}),
+        (None, {'fields': ('title','description',)}),
+        (_('advanced'), {'fields': ('drop_up_links',),'classes': ('collapse',),}),
+    )
+    readonly_fields = ('gallery',)
+    filter_horizontal = ('drop_up_links',)
+    def response_change(self, request, obj):
+        if not request.POST.get("_continue"):
+            return HttpResponse('<script type="text/javascript">window.close();</script>')
+        return super(ImageDetailAdmin, self).response_change(request, obj)
+    def has_add_permission(self, request):
+        '''
+        Can only be added in the context of a gallery
+        '''
+        return False
+    def has_delete_permission(self, request, obj=None):
+        '''
+        Can only be deleted in the context of a gallery
+        '''
+        return False
+    def get_model_perms(self, request):
+        '''
+        The image change view should only be accessable from the edit link
+        on the inlines of the gallery change view.
+        '''
+        return {
+            'add': False,
+            'change': False,
+            'delete': False,
+        }
+
 admin.site.register(Gallery, GalleryAdmin)
+admin.site.register(Image, ImageDetailAdmin)
