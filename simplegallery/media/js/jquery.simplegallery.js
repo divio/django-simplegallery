@@ -40,7 +40,7 @@ $.fn.simpleGallery = function (options) {
 		before: bindBeforeCycleCallback,
 		after: bindAfterCycleCallback,
 		/* custom options */
-		external: true,
+		external: false,
 		thumbnails: true,
 		cycleThumbNav: false,
 		slideNav: true,
@@ -259,17 +259,17 @@ $.fn.simpleGallery = function (options) {
 
 	// proper event delegation (store events / retrieve events)
 	$this.bind('animation.start', function () {
-		console.log('### animation started');
-		$this.bind('click', function (e) {
-			console.log('fire');
-			e.preventDefault();
-			e.stopPropagation();
-			e.stopImmediatePropagation();
-		});
+		//console.log('### animation started');
+		//$this.bind('click', function (e) {
+			//console.log('fire');
+			//e.preventDefault();
+			//e.stopPropagation();
+			//e.stopImmediatePropagation();
+		//});
 	});
 	$this.bind('animation.end', function () {
-		$this.log('### animation ended');
-		$this.unbind('click');
+		//$this.log('### animation ended');
+		//$this.unbind('click');
 	});
 
 	// init main gallery

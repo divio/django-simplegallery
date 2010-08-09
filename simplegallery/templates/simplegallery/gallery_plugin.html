@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
 	<div class="simplegallery_fullview">
 		<p class="fv-nav"><a href="#prev" class="fv-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="fv-next">{% trans "Next &raquo;" %}</a></p>
 		<p class="fv-magnifier"><a href="#zoom"><abbr title="{% trans 'Zoom in' %}">+</abbr></a></p>
-		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
+		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a> <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
 		<div class="fv-caption"><p>&nbsp;</p></div>
 		<ul>
 		{% for image in gallery.images.all %}
