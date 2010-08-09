@@ -28,7 +28,7 @@ jQuery(document).ready(function ($) {
 		<div class="fv-caption"><p>&nbsp;</p></div>
 		<ul>
 		{% for image in gallery.images.all %}
-			<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}" alt="{{ image.description|escape }}" /></a></li>
+			<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape }}" /></a></li>
 		{% endfor %}
 		</ul>
 	</div>
@@ -41,4 +41,4 @@ jQuery(document).ready(function ($) {
 		</ul>
 	</div>
 </div>
-<!-- end: gallery -->{% comment %}{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %}{% endcomment %}
+<!-- end: gallery -->
