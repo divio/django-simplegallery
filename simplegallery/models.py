@@ -13,6 +13,9 @@ from filer.fields.image import FilerImageField
 
 from simplegallery.fields import AspectRatioField
 
+from tinymce.models import HTMLField
+from simplegallery import south_introspections # make sure south knows about the HTMLField
+
 CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES',() )
 
 class Gallery(models.Model):
@@ -21,8 +24,8 @@ class Gallery(models.Model):
     groups = models.ManyToManyField(Group)
     
     class Translation(TranslationModel):
-        title = models.CharField(max_length=255, null=True, blank=True)
-        description = models.TextField(null=True, blank=True)
+        title = models.CharField(_('title'), max_length=255, blank=True, default='')
+        description = HTMLField(blank=True, default='')
 
     class Meta:
         verbose_name = _('gallery')
@@ -45,8 +48,8 @@ class Image(models.Model):
     drop_up_links = models.ManyToManyField('sites.Site', blank=True)
     
     class Translation(TranslationModel):
-        title = models.CharField(_('title'), max_length=255, null=True, blank=True)
-        description = models.TextField(_('description'), null=True, blank=True)
+        title = models.CharField(_('title'), max_length=255, blank=True, default='')
+        description = HTMLField(_('description'), blank=True, default='')
 
     class Meta:
         ordering = ('ordering',)
