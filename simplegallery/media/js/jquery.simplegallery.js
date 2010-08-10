@@ -1,7 +1,7 @@
 (function ($) {
 /**
  * SimpleGallery
- * @version: 2.0
+ * @version: 2.2
  * @params (items marked with # are not yet finished)
    - external: enable external interface (starting slide controllable via: http://localhost:8000/de/plugins/#8)
    - thumbnails: enable thumbnail view on bottom of gallery
@@ -18,7 +18,9 @@
    - lightbox: enable lightbox functionality
    - ligthboxType: define lightbox type. Either colorbox or fancybox
    - lightboxOptions: transmit options for lightbox
-   # proper event delegation
+   ##### issues
+   - slideNav / infiniteCycle
+   - proper event delegation
  */
 $.fn.simpleGallery = function (options) {
 	// save element
@@ -37,19 +39,22 @@ $.fn.simpleGallery = function (options) {
 		startingSlide: 0,
 		activePagerClass: 'active',
 		/* callbacks */
-		before: bindBeforeCycleCallback,
-		after: bindAfterCycleCallback,
+		before: bindBeforeCycleCallback, /* wouldn't recomend ;) */
+		after: bindAfterCycleCallback, /* wouldn't recomend ;) */
 		/* custom options */
 		external: false,
 		thumbnails: true,
 		cycleThumbNav: false,
 		slideNav: true,
+		autoSlideNav: false,
 		thumbNav: false,
-		navSelectors: { next: '.fv-nav a[href*=#next]', prev: '.fv-nav a[href*=#prev]' },
+		navSelectors: { next: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#next]', prev: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#prev]' },
 		infinite: true,
 		controls: true,
 		nummeric: false,
 		nummericSeperator: ' | ',
+		status: true,
+		statusSeperator: ' / ',
 		caption: true,
 		captionFx: 'fade', /* fade, slide, toggle */
 		lightbox: false,
@@ -91,6 +96,21 @@ $.fn.simpleGallery = function (options) {
 			next: options.navSelectors.next,
 			prev: options.navSelectors.prev
 		}, options);
+	}
+
+	// autoshow/hide slideNav
+	if(options.autoSlideNav) {
+		// slideNav needs to be enabled
+		if(!options.slideNav) return false;
+		// autohide nav
+		$this.find('.fv-nav').hide();
+		// attach events
+		$this.bind('mouseenter', function () {
+			$this.find('.fv-nav').css('opacity', 1).stop().fadeIn();
+		});
+		$this.bind('mouseleave', function () {
+			$this.find('.fv-nav').stop().fadeOut();
+		});
 	}
 
 	// cycle thumbnav
@@ -152,6 +172,12 @@ $.fn.simpleGallery = function (options) {
 		});
 	}
 
+	// show current status
+	if(options.status) {
+		var status = $this.find('.fv-status');
+			status.show();
+	}
+
 	// nummeric navigation
 	if(options.nummeric) {
 		thumb.find('li a').each(function (index) {
@@ -187,14 +213,18 @@ $.fn.simpleGallery = function (options) {
 		if(options.caption) {
 			// show caption immediately
 			var speed = (init) ? options.speed : 0;
+			var title = $(nextSlideElement).find('a').attr('title');
+			var desc = $(nextSlideElement).find('a img').attr('alt');
 
-			if(init && options.captionFx == 'fade') caption.fadeOut();
-			if(init && options.captionFx == 'slide') caption.slideUp();
-			if(init && options.captionFx == 'toggle') caption.hide();
+			// check if vars are available
+			if(title == 'None')  title = '';
+			if(desc == 'None') desc = '';
+
+			if(init && options.captionFx == 'fade') caption.stop().fadeOut();
+			if(init && options.captionFx == 'slide') caption.stop().slideUp();
+			if(init && options.captionFx == 'toggle') caption.stop().hide();
 			// do some delay
 			setTimeout(function () {
-				var title = $(nextSlideElement).find('a').attr('title');
-				var desc = $(nextSlideElement).find('a img').attr('alt');
 				caption.find('p').html('<span>' + title + '</span>' + desc);
 			}, speed);
 		}
@@ -211,6 +241,8 @@ $.fn.simpleGallery = function (options) {
 			// initiate animation
 			thumb.animate({left: -(thumbWidth*visibleBound*(currentTurn-1))+addWidth});
 		}
+		// change status
+		if(options.status) status.html((index+1) + options.statusSeperator + options.slideCount);
 		// animation started
 		if(init) $this.trigger('animation.start');
 	}
@@ -221,10 +253,11 @@ $.fn.simpleGallery = function (options) {
 		var index = 0;
 
 		// caption effect
-		if(options.caption) {
-			if(options.captionFx == 'fade') caption.fadeIn();
-			if(options.captionFx == 'slide') caption.slideDown();
-			if(options.captionFx == 'toggle') caption.show();
+		if(options.caption && !($(nextSlideElement).find('a').attr('title') == 'None' 
+						   && $(nextSlideElement).find('a img').attr('alt') == 'None')) {
+			if(options.captionFx == 'fade') caption.css('opacity', 1).stop().fadeIn();
+			if(options.captionFx == 'slide') caption.css('height', 'auto').stop().slideDown();
+			if(options.captionFx == 'toggle') caption.css('display', 'block').stop().show();
 		}
 		// infinite deactivation at last slide
 		if(!options.infinite && (options.currSlide == (options.slideCount-1))) {
