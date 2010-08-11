@@ -20,7 +20,6 @@
    - lightboxOptions: transmit options for lightbox
    ##### issues
    - slideNav / infiniteCycle
-   - proper event delegation
  */
 $.fn.simpleGallery = function (options) {
 	// save element
@@ -289,21 +288,6 @@ $.fn.simpleGallery = function (options) {
 	}
 
 	var handler = function (e) { e.preventDefault(); };
-
-	// proper event delegation (store events / retrieve events)
-	$this.bind('animation.start', function () {
-		//console.log('### animation started');
-		//$this.bind('click', function (e) {
-			//console.log('fire');
-			//e.preventDefault();
-			//e.stopPropagation();
-			//e.stopImmediatePropagation();
-		//});
-	});
-	$this.bind('animation.end', function () {
-		//$this.log('### animation ended');
-		//$this.unbind('click');
-	});
 
 	// init main gallery
 	gallery.cycle(options);

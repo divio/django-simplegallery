@@ -25,8 +25,6 @@ jQuery(document).ready(function ($) {
 </script>
 {% endaddtoblock %}
 
-{% if gallery.title %}<h2>{{ gallery.title }}</h2>{% endif %}
-
 <!-- start: gallery -->
 <div class="plugin_simplegallery-lite clearfix" id="simplegallery_{{ instance.id }}">
 	<div class="simplegallery_fullview">
@@ -35,11 +33,13 @@ jQuery(document).ready(function ($) {
 		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a> <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
 		<p class="fv-status">&nbsp;</p>
 		<div class="fv-caption"><p>&nbsp;</p></div>
-		<ul>
-		{% for image in images %}
-			<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
-		{% endfor %}
-		</ul>
+		<div class="fv-wrapper">
+			<ul>
+			{% for image in images %}
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
+			{% endfor %}
+			</ul>
+		</div>
 	</div>
 	<div class="simplegallery_thumbnails">
 		<p class="thmb-nav"><a href="#prev" class="thmb-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="thmb-next">{% trans "Next &raquo;" %}</a></p>
