@@ -14,7 +14,9 @@
 .simplegallery_fullview ul { list-style:none; padding:0; margin:0; }
 .simplegallery_fullview ul li { padding:0; margin:0; zoom:1; }
 
-.fv-wrapper { position:relative; left:0; top:0; z-index:21; overflow:hidden; }
+.fv-wrapper { position:relative; left:0; top:0; z-index:21; overflow:hidden; line-height:0; font-size:0px;
+			  /* ie fix */
+			  width:100%; height:auto; }
 
 /* thumbnail container */
 .simplegallery_thumbnails { position:relative; left:0; top:0; z-index:19; overflow:hidden; }
