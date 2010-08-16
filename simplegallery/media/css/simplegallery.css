@@ -27,12 +27,12 @@
 .simplegallery_thumbnails ul li.active a { border:3px solid #000; }
 
 /* gallery navigation */
-.fv-nav { display:none; position:absolute; left:0; top:45%; z-index:25; width:100%; padding:0; margin:0; }
+.fv-nav { float:left; display:none; position:absolute; left:0; top:45%; z-index:25; width:100%; padding:0; margin:0; }
 .fv-nav-disabled { color:#ccc !important; cursor:normal; }
 .fv-nav-disabled:hover { color:#ccc !important; background:#fff !important; }
 
-.fv-prev { float:left; }
-.fv-next { float:right; }
+.fv-prev { position:absolute; left:0; top:0; z-index:26; }
+.fv-next { position:absolute; right:0; top:0; z-index:26; }
 .fv-prev, .fv-next { display:block; font-size:14px; color:#000; text-decoration:none !important; padding:5px 10px; background:#fff; }
 .fv-prev:hover, .fv-next:hover { color:#fff; background:#000; }
 
@@ -65,8 +65,10 @@
 /* gallery caption */
 .fv-caption { display:none; position:absolute; left:0; bottom:0; z-index:22; height:30%; width:100%;
 			  background:rgba(0, 0, 0, 0.5); -pie-background:rgba(0, 0, 0, 0.5); behavior:url('/media/css/PIE.htc'); }
-.fv-caption p { padding:20px 25px; color:#fff; }
-.fv-caption p span { display:block; font-size:16px; font-weight:bold; line-height:1.8; }
+.fv-caption-inline { display:none; padding:20px 25px; color:#fff; }
+.fv-caption-inline span { display:block; font-size:16px; font-weight:bold; line-height:1.8; }
+
+.fv-caption-block { display:none; padding:20px 25px; color:#fff; }
 
 /* gallery lightbox effect */
 .fv-magnifier { display:none; position:absolute; left:15px; top:15px; z-index:22; text-align:center; }

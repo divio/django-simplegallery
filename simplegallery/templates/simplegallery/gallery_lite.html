@@ -17,7 +17,8 @@ jQuery(document).ready(function ($) {
 			autoSlideNav: true,
 			controls: false,
 			status: true,
-			caption: false
+			caption: false,
+			disableAnchor: true
 		});
 	}, 1000);
 });
@@ -26,17 +27,25 @@ jQuery(document).ready(function ($) {
 {% endaddtoblock %}
 
 <!-- start: gallery -->
-<div class="plugin_simplegallery-lite clearfix" id="simplegallery_{{ instance.id }}">
+<div class="plugin_simplegallery clearfix" id="simplegallery_{{ instance.id }}">
 	<div class="simplegallery_fullview">
 		<p class="fv-nav"><a href="#prev" class="fv-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="fv-next">{% trans "Next &raquo;" %}</a></p>
 		<p class="fv-magnifier"><a href="#zoom"><abbr title="{% trans 'Zoom in' %}">+</abbr></a></p>
 		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a> <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
 		<p class="fv-status">&nbsp;</p>
-		<div class="fv-caption"><p>&nbsp;</p></div>
+		<div class="fv-caption">
+			{% for image in images %}
+			<div class="fv-caption-block">
+				<div class="fv-caption-title">{{ image.title|escape }}</div>
+				<div class="fv-caption-desc">{{ image.description|safe }}</div>
+			</div>
+			{% endfor %}
+			<p>&nbsp;</p>
+		</div>
 		<div class="fv-wrapper">
 			<ul>
 			{% for image in images %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}"{% if not image.page_link %} rel="lightbox"{% endif %} title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
 			{% endfor %}
 			</ul>
 		</div>

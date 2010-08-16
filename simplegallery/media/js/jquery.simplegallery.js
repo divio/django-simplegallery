@@ -1,11 +1,12 @@
 (function ($) {
 /**
  * SimpleGallery
- * @version: 2.2
- * @params (items marked with # are not yet finished)
+ * @version: 2.2.1
+ * @params
    - external: enable external interface (starting slide controllable via: http://localhost:8000/de/plugins/#8)
    - thumbnails: enable thumbnail view on bottom of gallery
    - slideNav: enable next/back button on slideshow
+   - autoSlideNav: shows slidenav only when hovering the picture
    - thumbNav: enable next/back button on thumbnail
    - navSelectors: classes for binding single/multiple next/back buttons
    - infinite: should gallery spin infinite?
@@ -13,8 +14,12 @@
    - controls: show play/pause buttons
    - nummeric: display nummeric thumbnail navigation instead of image-based
    - nummericSeperator: seperator for seperating each item
+   - status: show count status on fullview layer
+   - statusSeperator: define seperator for currentCount and bound
    - caption: show captions from title and alt attributes
    - captionFx: define caption transitions, either fade, slide or toggle
+   - htmlCaption: grabs html caption instead of alt/title caption
+   - disableAnchor: disables default link behavior on fullview image
    - lightbox: enable lightbox functionality
    - ligthboxType: define lightbox type. Either colorbox or fancybox
    - lightboxOptions: transmit options for lightbox
@@ -44,9 +49,9 @@ $.fn.simpleGallery = function (options) {
 		external: false,
 		thumbnails: true,
 		cycleThumbNav: false,
+		thumbNav: false,
 		slideNav: true,
 		autoSlideNav: false,
-		thumbNav: false,
 		navSelectors: { next: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#next]', prev: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#prev]' },
 		infinite: true,
 		controls: true,
@@ -56,6 +61,8 @@ $.fn.simpleGallery = function (options) {
 		statusSeperator: ' / ',
 		caption: true,
 		captionFx: 'fade', /* fade, slide, toggle */
+		htmlCaption: false,
+		disableAnchor: false,
 		lightbox: false,
 		lightboxType: 'colorbox',
 		lightboxOptions: {}
@@ -104,10 +111,10 @@ $.fn.simpleGallery = function (options) {
 		// autohide nav
 		$this.find('.fv-nav').hide();
 		// attach events
-		$this.bind('mouseenter', function () {
+		$this.find('.simplegallery_fullview').bind('mouseenter', function () {
 			$this.find('.fv-nav').css('opacity', 1).stop().fadeIn();
 		});
-		$this.bind('mouseleave', function () {
+		$this.find('.simplegallery_fullview').bind('mouseleave', function () {
 			$this.find('.fv-nav').stop().fadeOut();
 		});
 	}
@@ -188,6 +195,8 @@ $.fn.simpleGallery = function (options) {
 
 	// implement caption
 	if(options.caption) { var caption = $this.find('.fv-caption'); caption.show(); }
+	$this.find('.fv-caption-inline').hide();
+	$this.find('.fv-caption-block').hide();
 
 	// load lightbox
 	if(options.lightbox) {
@@ -195,12 +204,14 @@ $.fn.simpleGallery = function (options) {
 		var magnifier = $this.find('.fv-magnifier');
 			magnifier.show();
 		// attach ligtbox event
-		if(options.lightboxType == 'fancybox') fullviewImages.fancybox(options.lightboxOptions);
-		if(options.lightboxType == 'colorbox') fullviewImages.colorbox(options.lightboxOptions);
+		if(options.lightboxType == 'fancybox') $this.find('a[rel=lightbox]').fancybox(options.lightboxOptions);
+		if(options.lightboxType == 'colorbox') $this.find('a[rel=lightbox]').colorbox(options.lightboxOptions);
 	} else {
 		// disattach events from pictures
-		fullviewImages.bind('click', function (e) { e.preventDefault(); gallery.cycle('next'); });
-		fullviewImages.css('cursor', 'default');
+		if(options.disableAnchor) {
+			fullviewImages.bind('click', function (e) { e.preventDefault(); gallery.cycle('next'); });
+			fullviewImages.css('cursor', 'default');
+		}
 	}
 
 	// function that will be triggered before (initiated at first load)
@@ -224,7 +235,13 @@ $.fn.simpleGallery = function (options) {
 			if(init && options.captionFx == 'toggle') caption.stop().hide();
 			// do some delay
 			setTimeout(function () {
-				caption.find('p').html('<span>' + title + '</span>' + desc);
+				if(options.htmlCaption) {
+					caption.find('.fv-caption-block').hide();
+					$(caption.find('.fv-caption-block')[index]).show();
+				} else {
+					caption.find('.fv-caption-inline').show();
+					caption.find('p').html('<span>' + title + '</span>' + desc);
+				}
 			}, speed);
 		}
 		// check thumbNav
@@ -276,8 +293,9 @@ $.fn.simpleGallery = function (options) {
 			}
 		}
 		// add mignifier event
-		if(options.lightbox) magnifier.unbind().bind('click', function () { 
-			$(nextSlideElement).find('a').trigger('click');
+		if(options.lightbox) magnifier.unbind().bind('click', function (e) { 
+			e.preventDefault();
+			$(nextSlideElement).find('a').colorbox({open:true});
 		});
 		// external interface
 		if(options.external) window.location.hash = options.currSlide+1;

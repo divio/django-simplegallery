@@ -1,5 +1,6 @@
 {% load i18n thumbnail sekizai_tags %}
 {% addtoblock "css" %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}simplegallery/css/simplegallery.css" media="screen, projection" />{% endaddtoblock "css" %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}js/libs/jquery.colorbox-1.3.9.js"></script>{% endaddtoblock "js" %}
 {% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.cycle-2.88.js"></script>{% endaddtoblock "js" %}
 {% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.simplegallery.js"></script>{% endaddtoblock "js" %}
 {% addtoblock "js" %}
@@ -12,6 +13,8 @@ jQuery(document).ready(function ($) {
 				next: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#next]',
 				prev: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#prev]'
 			},
+			htmlCaption: true,
+			lightbox: true,
 			timeout: {{ instance.interval }}*1000
 		});
 	}, 1000);
@@ -21,7 +24,7 @@ jQuery(document).ready(function ($) {
 {% endaddtoblock %}
 
 {% if gallery.title %}<h2>{{ gallery.title|escape|striptags }}</h2>{% endif %}
-{% if gallery.description %}<p>{{ gallery.description|escape|striptags }}</p>{% endif %}
+{% if gallery.description %}{{ gallery.description|safe }}{% endif %}
 
 <!-- start: gallery -->
 <div class="plugin_simplegallery clearfix" id="simplegallery_{{ instance.id }}">
@@ -30,11 +33,19 @@ jQuery(document).ready(function ($) {
 		<p class="fv-magnifier"><a href="#zoom"><abbr title="{% trans 'Zoom in' %}">+</abbr></a></p>
 		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a> <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
 		<p class="fv-status">&nbsp;</p>
-		<div class="fv-caption"><p>&nbsp;</p></div>
+		<div class="fv-caption">
+			{% for image in gallery.images.all %}
+			<div class="fv-caption-block">
+				<div class="fv-caption-title">{{ image.title|escape }}</div>
+				<div class="fv-caption-desc">{{ image.description|safe }}</div>
+			</div>
+			{% endfor %}
+			<p class="fv-caption-inline">&nbsp;</p>
+		</div>
 		<div class="fv-wrapper">
 			<ul>
 			{% for image in gallery.images.all %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}"{% if not image.page_link %} rel="lightbox"{% endif %} title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
 			{% endfor %}
 			</ul>
 		</div>
