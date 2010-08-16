@@ -1,7 +1,7 @@
 (function ($) {
 /**
  * SimpleGallery
- * @version: 2.2.2
+ * @version: 2.2.3
  * @params
    - external: enable external interface (starting slide controllable via: http://localhost:8000/de/plugins/#8)
    - thumbnails: enable thumbnail view on bottom of gallery
@@ -20,6 +20,7 @@
    - captionFx: define caption transitions, either fade, slide or toggle
    - htmlCaption: grabs html caption instead of alt/title caption
    - disableAnchor: disables default link behavior on fullview image
+   - magnifier: show/hide magnifier
    - lightbox: enable lightbox functionality
    - ligthboxType: define lightbox type. Either colorbox or fancybox
    - lightboxOptions: transmit options for lightbox
@@ -63,6 +64,7 @@ $.fn.simpleGallery = function (options) {
 		captionFx: 'fade', /* fade, slide, toggle */
 		htmlCaption: false,
 		disableAnchor: false,
+		magnifier: true,
 		lightbox: false,
 		lightboxType: 'colorbox',
 		lightboxOptions: {}
@@ -202,7 +204,7 @@ $.fn.simpleGallery = function (options) {
 	if(options.lightbox) {
 		// show magnifier
 		var magnifier = $this.find('.fv-magnifier');
-			magnifier.show();
+			if(options.magnifier) magnifier.show();
 		// attach ligtbox event
 		if(options.lightboxType == 'fancybox') $this.find('a[rel^=lightbox]').fancybox(options.lightboxOptions);
 		if(options.lightboxType == 'colorbox') $this.find('a[rel^=lightbox]').colorbox(options.lightboxOptions);
