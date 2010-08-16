@@ -1,7 +1,7 @@
 (function ($) {
 /**
  * SimpleGallery
- * @version: 2.2.1
+ * @version: 2.2.2
  * @params
    - external: enable external interface (starting slide controllable via: http://localhost:8000/de/plugins/#8)
    - thumbnails: enable thumbnail view on bottom of gallery
@@ -204,8 +204,8 @@ $.fn.simpleGallery = function (options) {
 		var magnifier = $this.find('.fv-magnifier');
 			magnifier.show();
 		// attach ligtbox event
-		if(options.lightboxType == 'fancybox') $this.find('a[rel=lightbox]').fancybox(options.lightboxOptions);
-		if(options.lightboxType == 'colorbox') $this.find('a[rel=lightbox]').colorbox(options.lightboxOptions);
+		if(options.lightboxType == 'fancybox') $this.find('a[rel^=lightbox]').fancybox(options.lightboxOptions);
+		if(options.lightboxType == 'colorbox') $this.find('a[rel^=lightbox]').colorbox(options.lightboxOptions);
 	} else {
 		// disattach events from pictures
 		if(options.disableAnchor) {
@@ -295,7 +295,7 @@ $.fn.simpleGallery = function (options) {
 		// add mignifier event
 		if(options.lightbox) magnifier.unbind().bind('click', function (e) { 
 			e.preventDefault();
-			$(nextSlideElement).find('a').colorbox({open:true});
+			$.colorbox({'open':true, 'href': $(nextSlideElement).find('a').attr('rel').replace('lightbox ', '')});
 		});
 		// external interface
 		if(options.external) window.location.hash = options.currSlide+1;

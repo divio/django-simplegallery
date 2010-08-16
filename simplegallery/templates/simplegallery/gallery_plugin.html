@@ -45,7 +45,7 @@ jQuery(document).ready(function ($) {
 		<div class="fv-wrapper">
 			<ul>
 			{% for image in gallery.images.all %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}"{% if not image.page_link %} rel="lightbox"{% endif %} title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}" rel="{% if not image.page_link %}lightbox group {% endif %}{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
 			{% endfor %}
 			</ul>
 		</div>
