@@ -1,7 +1,7 @@
 (function ($) {
 /**
  * SimpleGallery
- * @version: 2.2.4
+ * @version: 2.2.5
  * @params
    - external: enable external interface (starting slide controllable via: http://localhost:8000/de/plugins/#8)
    - thumbnails: enable thumbnail view on bottom of gallery
@@ -297,7 +297,8 @@ $.fn.simpleGallery = function (options) {
 		// add mignifier event
 		if(options.lightbox) magnifier.unbind().bind('click', function (e) { 
 			e.preventDefault();
-			$.colorbox({'open':true, 'href': $(nextSlideElement).find('a').attr('rel').replace('lightbox ', '')});
+			console.log($(nextSlideElement).find('a').attr('rel'));
+			$.colorbox({'open':true, 'href': $(nextSlideElement).find('a').attr('rel').replace('lightbox group ', '')});
 		});
 		// external interface
 		if(options.external) window.location.hash = options.currSlide+1;
