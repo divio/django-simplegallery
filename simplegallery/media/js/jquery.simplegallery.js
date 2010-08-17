@@ -55,7 +55,7 @@ $.fn.simpleGallery = function (options) {
 		autoSlideNav: false,
 		navSelectors: { next: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#next]', prev: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#prev]' },
 		cycleThumbNav: false,
-		cycleThumbNavCount: 5,
+		cycleThumbNavCount: 'auto', /* only auto works atm */
 		infinite: true, /* hm check that thing */
 		nummeric: false,
 		nummericSeperator: ' | ',
@@ -93,6 +93,7 @@ $.fn.simpleGallery = function (options) {
 		var thumbWidth = thumb.find('li').outerWidth(true);
 		var fullviewWidth = fullview.width();
 		var visibleBound = Math.ceil(fullviewWidth/thumbWidth);
+		if(options.cycleThumbNavCount == 'auto') options.cycleThumbNavCount = visibleBound;
 
 		options = $.fn.extend({
 			/* attach events */
@@ -252,11 +253,11 @@ $.fn.simpleGallery = function (options) {
 			thumb.find('li').removeClass('active');
 			$(thumb.find('li')[(index)]).addClass('active');
 
-			// autocycle
-			//if((index+1) > (visibleBound*thmbPos)) moveThumbNav('right');
-			//if(index == 0) thumb.stop().animate({'left': 0});
-			// visibleBound = 5
-			//if((index+1) == visibleBound+(options.cycleThumbNavCount*thmbPos)) moveThumbNav('right');
+			// switching
+			if((index) == (visibleBound*(thmbPos+1))) moveThumbNav('right');
+
+			// if reached 0 than move to left
+			if(index == 0) { thumb.stop().animate({'left': 0}); thmbPos = 0; }
 		}
 		// change status
 		if(options.status) status.html((index+1) + options.statusSeperator + options.slideCount);
