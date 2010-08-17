@@ -1,7 +1,7 @@
 (function ($) {
 /**
  * SimpleGallery
- * @version: 2.2.3
+ * @version: 2.2.4
  * @params
    - external: enable external interface (starting slide controllable via: http://localhost:8000/de/plugins/#8)
    - thumbnails: enable thumbnail view on bottom of gallery
@@ -10,7 +10,8 @@
    - thumbNav: enable next/back button on thumbnail
    - navSelectors: classes for binding single/multiple next/back buttons
    - infinite: should gallery spin infinite?
-   - cycleThumbnav: should thumbnav cycle too? Redommended when you have lots of thumbs
+   - cycleThumbnav: should thumbnav cycle too? Recommended when you have lots of thumbs
+   - cycleThumbNavCount: items to slide at once
    - controls: show play/pause buttons
    - nummeric: display nummeric thumbnail navigation instead of image-based
    - nummericSeperator: seperator for seperating each item
@@ -24,8 +25,8 @@
    - lightbox: enable lightbox functionality
    - ligthboxType: define lightbox type. Either colorbox or fancybox
    - lightboxOptions: transmit options for lightbox
-   ##### issues
-   - slideNav / infiniteCycle
+   ##### todo
+   - infiniteCycle
  */
 $.fn.simpleGallery = function (options) {
 	// save element
@@ -49,15 +50,16 @@ $.fn.simpleGallery = function (options) {
 		/* custom options */
 		external: false,
 		thumbnails: true,
-		cycleThumbNav: false,
 		thumbNav: false,
 		slideNav: true,
 		autoSlideNav: false,
 		navSelectors: { next: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#next]', prev: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#prev]' },
-		infinite: true,
-		controls: true,
+		cycleThumbNav: false,
+		cycleThumbNavCount: 5,
+		infinite: true, /* hm check that thing */
 		nummeric: false,
 		nummericSeperator: ' | ',
+		controls: true,
 		status: true,
 		statusSeperator: ' / ',
 		caption: true,
@@ -83,8 +85,14 @@ $.fn.simpleGallery = function (options) {
 	// attach thumbnail events
 	if(options.thumbnails) {
 		var thumb = $this.find('.simplegallery_thumbnails ul');
-		// show thumbnails
-		thumb.show();
+			// show thumbnails
+			thumb.show();
+
+		// save some basic vars
+		var bound = thumb.find('li a').length;
+		var thumbWidth = thumb.find('li').outerWidth(true);
+		var fullviewWidth = fullview.width();
+		var visibleBound = Math.ceil(fullviewWidth/thumbWidth);
 
 		options = $.fn.extend({
 			/* attach events */
@@ -98,7 +106,7 @@ $.fn.simpleGallery = function (options) {
 	// attach next/prev trigger events to navigations
 	if(options.slideNav || options.thumbNav) {
 		if(options.slideNav) $this.find('.fv-nav').show();
-		if(options.thumbNav) $this.find('.thmb-nav').show();
+		if(options.thumbnails && options.thumbNav && options.cycleThumbNav) $this.find('.thmb-nav').show();
 
 		options = $.fn.extend({
 			next: options.navSelectors.next,
@@ -108,7 +116,7 @@ $.fn.simpleGallery = function (options) {
 
 	// autoshow/hide slideNav
 	if(options.autoSlideNav) {
-		// slideNav needs to be enabled
+		// requires slideNav
 		if(!options.slideNav) return false;
 		// autohide nav
 		$this.find('.fv-nav').hide();
@@ -122,39 +130,44 @@ $.fn.simpleGallery = function (options) {
 	}
 
 	// cycle thumbnav
-	if(options.cycleThumbNav) {
-		if(options.thumbNav) {
-			var thumbControls = {
-				next: $this.find('.thmb-nav .thmb-next'),
-				prev: $this.find('.thmb-nav .thmb-prev')
-			}
-			thumbControls.next.bind('click', function (e) {
-				e.preventDefault();
-				$(this).trigger('thumbBtnNext');
-				//console.log('next');
+	if(options.thumbnails) {
+		var thumbControls = {
+			next: $this.find('.thmb-nav .thmb-next'),
+			prev: $this.find('.thmb-nav .thmb-prev')
+		}
+		thumbControls.next.bind('click', function (e) {
+			e.preventDefault();
+			moveThumbNav('right');
+			$(this).trigger('thumbBtnNext');
+		});
+		thumbControls.prev.bind('click', function (e) {
+			e.preventDefault();
+			moveThumbNav('left');
+			$(this).trigger('thumbBtnPrev');
+		});
+
+		if(options.cycleThumbNav) {
+			// set width and height
+			thumb.css({
+				width: (bound*thumbWidth),
+				position: 'absolute',
+				left: 0,
+				top: 0
 			});
-			thumbControls.prev.bind('click', function (e) {
-				e.preventDefault();
-				$(this).trigger('thumbBtnPrev');
-				//console.log('back');
+			thumb.parent().addClass('thmb_cycle').css({
+				width: fullviewWidth,
+				height: thumb.find('li').outerHeight(true)
 			});
 		}
+	}
 
-		var bound = thumb.find('li a').length;
-		var thumbWidth = thumb.find('li').outerWidth(true);
-		//var thumbHeight = thumb.find('li').outerHeight(true);
-		var fullviewWidth = fullview.width();
-
-		// set width and height
-		thumb.parent().addClass('thmb_cycle').css({
-			width: fullviewWidth,
-			height: thumb.find('li').outerHeight(true)
+	// nummeric navigation
+	if(options.nummeric) {
+		thumb.find('li a').each(function (index) {
+			var seperator = (index == 0) ? '' : options.nummericSeperator;
+			$(this).html(seperator+(index+1));
 		});
-		thumb.css({
-			position: 'absolute',
-			left: 0,
-			top: 0
-		});
+		thumb.addClass('thmb-nummeric');
 	}
 
 	// play/pause controls
@@ -186,19 +199,10 @@ $.fn.simpleGallery = function (options) {
 			status.show();
 	}
 
-	// nummeric navigation
-	if(options.nummeric) {
-		thumb.find('li a').each(function (index) {
-			var seperator = (index == 0) ? '' : options.nummericSeperator;
-			$(this).html(seperator+(index+1));
-		});
-		thumb.addClass('thmb-nummeric');
-	}
-
 	// implement caption
 	if(options.caption) { var caption = $this.find('.fv-caption'); caption.show(); }
-	$this.find('.fv-caption-inline').hide();
-	$this.find('.fv-caption-block').hide();
+		$this.find('.fv-caption-inline').hide();
+		$this.find('.fv-caption-block').hide();
 
 	// load lightbox
 	if(options.lightbox) {
@@ -228,10 +232,6 @@ $.fn.simpleGallery = function (options) {
 			var title = $(nextSlideElement).find('a').attr('title');
 			var desc = $(nextSlideElement).find('a img').attr('alt');
 
-			// check if vars are available
-			if(title == 'None')  title = '';
-			if(desc == 'None') desc = '';
-
 			if(init && options.captionFx == 'fade') caption.stop().fadeOut();
 			if(init && options.captionFx == 'slide') caption.stop().slideUp();
 			if(init && options.captionFx == 'toggle') caption.stop().hide();
@@ -247,17 +247,16 @@ $.fn.simpleGallery = function (options) {
 			}, speed);
 		}
 		// check thumbNav
-		if(options.cycleThumbNav) {
+		if(options.thumbnails && options.cycleThumbNav) {
 			// rewrite active class setting for better performance
 			thumb.find('li').removeClass('active');
 			$(thumb.find('li')[(index)]).addClass('active');
-			// save variables
-			var visibleBound = Math.floor(fullviewWidth/thumbWidth)-1;
-			var currentTurn = Math.ceil((index+1)/visibleBound);
-			var addWidth = 0;
-			if(index >= visibleBound) addWidth = thumbWidth;
-			// initiate animation
-			thumb.animate({left: -(thumbWidth*visibleBound*(currentTurn-1))+addWidth});
+
+			// autocycle
+			//if((index+1) > (visibleBound*thmbPos)) moveThumbNav('right');
+			//if(index == 0) thumb.stop().animate({'left': 0});
+			// visibleBound = 5
+			//if((index+1) == visibleBound+(options.cycleThumbNavCount*thmbPos)) moveThumbNav('right');
 		}
 		// change status
 		if(options.status) status.html((index+1) + options.statusSeperator + options.slideCount);
@@ -271,8 +270,8 @@ $.fn.simpleGallery = function (options) {
 		var index = 0;
 
 		// caption effect
-		if(options.caption && !($(nextSlideElement).find('a').attr('title') == 'None' 
-						   && $(nextSlideElement).find('a img').attr('alt') == 'None')) {
+		if(options.caption && !($(nextSlideElement).find('a').attr('title') == '' 
+						   && $(nextSlideElement).find('a img').attr('alt') == '')) {
 			if(options.captionFx == 'fade') caption.css('opacity', 1).stop().fadeIn();
 			if(options.captionFx == 'slide') caption.css('height', 'auto').stop().slideDown();
 			if(options.captionFx == 'toggle') caption.css('display', 'block').stop().show();
@@ -307,7 +306,22 @@ $.fn.simpleGallery = function (options) {
 		init = true;
 	}
 
-	var handler = function (e) { e.preventDefault(); };
+	// save the current slide
+	var thmbPos = options.startingSlide;
+	// move thumb navigation
+	function moveThumbNav(pos) {
+		if(pos == 'left') {
+			if(!(thmbPos <= 0)) {
+				thmbPos--;
+				thumb.stop().animate({'left': -(thmbPos*(thumbWidth*options.cycleThumbNavCount))});
+			}
+		} else {
+			if(!((thmbPos*options.cycleThumbNavCount) >= (bound-visibleBound))) {
+				thmbPos++;
+				thumb.stop().animate({'left': -(thmbPos*(thumbWidth*options.cycleThumbNavCount))});
+			}
+		}
+	}
 
 	// init main gallery
 	gallery.cycle(options);

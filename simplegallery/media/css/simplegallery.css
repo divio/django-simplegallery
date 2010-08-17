@@ -10,7 +10,7 @@
 .plugin_simplegallery-lite { margin:0 0 15px; }
 
 /* gallery container */
-.simplegallery_fullview { position:relative; left:0; top:0; z-index:20; margin:5px; }
+.simplegallery_fullview { position:relative; left:0; top:0; z-index:20; margin:0 0 5px 0; }
 .simplegallery_fullview ul { list-style:none; padding:0; margin:0; }
 .simplegallery_fullview ul li { padding:0; margin:0; zoom:1; }
 
@@ -21,8 +21,8 @@
 /* thumbnail container */
 .simplegallery_thumbnails { position:relative; left:0; top:0; z-index:19; overflow:hidden; }
 .simplegallery_thumbnails ul { display:none; list-style:none; padding:0; margin:0; }
-.simplegallery_thumbnails ul li { float:left; line-height:0; padding:0; margin:0 0 0 2px; zoom:1; }
-.simplegallery_thumbnails ul li a { float:left; border:3px solid #fff; }
+.simplegallery_thumbnails ul li { float:left; line-height:0; padding:0; margin:0 0 10px 0; zoom:1; }
+.simplegallery_thumbnails ul li a { float:left; border:3px solid #ddd; margin:0 6px 0 0; }
 .simplegallery_thumbnails ul li a:hover { border:3px solid #ccc; }
 .simplegallery_thumbnails ul li.active a { border:3px solid #000; }
 
@@ -38,16 +38,16 @@
 
 /* thumbnail navigation */
 .thmb-nav { display:none; }
-.thmb-nav a { display:block; position:absolute; top:13px; z-index:22; color:#fff; text-decoration:none;
+.thmb-nav a { display:block; position:absolute; top:24%; z-index:26; color:#fff; text-decoration:none;
 			  padding:0 5px; background:#000; }
 .thmb-nav a:hover { color:#000; background:#fff; }
-.thmb-nav .thmb-prev { left:10px; }
+.thmb-nav .thmb-prev { left:0; }
 .thmb-nav .thmb-next { right:0; }
 
-.thmb_cycle li { height:46px; } /* prevent loading errors */
+.thmb_cycle li { height:66px; } /* prevent loading errors */
 
 /* thumbnail container nummeric */
-.thmb-nummeric { position:absolute; right:15px; bottom:35px; z-index:22; }
+.thmb-nummeric { position:absolute; right:15px; bottom:0; z-index:22; }
 .thmb-nummeric li a { color:#fff; text-decoration:none; padding-right:2px; line-height:1.6; border:none !important; }
 .thmb-nummeric li a:hover { border:none !important; }
 .thmb-nummeric li.active a { font-weight:bold; border:none !important; }
