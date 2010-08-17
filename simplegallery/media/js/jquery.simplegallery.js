@@ -297,7 +297,6 @@ $.fn.simpleGallery = function (options) {
 		// add mignifier event
 		if(options.lightbox) magnifier.unbind().bind('click', function (e) { 
 			e.preventDefault();
-			console.log($(nextSlideElement).find('a').attr('rel'));
 			$.colorbox({'open':true, 'href': $(nextSlideElement).find('a').attr('rel').replace('lightbox group ', '')});
 		});
 		// external interface
