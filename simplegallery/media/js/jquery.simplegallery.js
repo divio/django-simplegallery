@@ -157,7 +157,7 @@ $.fn.simpleGallery = function (options) {
 			});
 			thumb.parent().addClass('thmb_cycle').css({
 				width: fullviewWidth,
-				height: thumb.find('li').outerHeight(true)
+				height: thumb.find('li a').outerHeight(true)
 			});
 		}
 	}

@@ -38,7 +38,7 @@
 
 /* thumbnail navigation */
 .thmb-nav { display:none; }
-.thmb-nav a { display:block; position:absolute; top:24%; z-index:26; color:#fff; text-decoration:none;
+.thmb-nav a { display:block; position:absolute; top:32%; z-index:26; color:#fff; text-decoration:none;
 			  padding:0 5px; background:#000; }
 .thmb-nav a:hover { color:#000; background:#fff; }
 .thmb-nav .thmb-prev { left:0; }
