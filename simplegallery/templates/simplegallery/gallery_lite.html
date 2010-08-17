@@ -36,8 +36,8 @@ jQuery(document).ready(function ($) {
 		<div class="fv-caption">
 			{% for image in images %}
 			<div class="fv-caption-block">
-				<div class="fv-caption-title">{{ image.title|escape }}</div>
-				<div class="fv-caption-desc">{{ image.description|safe }}</div>
+				{% if image.title %}<div class="fv-caption-title">{{ image.title|escape }}</div>{% endif %}
+				{% if image.description %}<div class="fv-caption-desc">{{ image.description|safe }}</div>{% endif %}
 			</div>
 			{% endfor %}
 			<p class="fv-caption-inline">&nbsp;</p>
@@ -45,7 +45,7 @@ jQuery(document).ready(function ($) {
 		<div class="fv-wrapper">
 			<ul>
 			{% for image in images %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}" rel="{% if not image.page_link %}lightbox group {% endif %}{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{{ image.description|escape|striptags }}" /></a></li>
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}" rel="{% if not image.page_link %}lightbox group {% endif %}{% thumbnail image.image 800x600 %}" title="{% if image.title %}{{ image.title|escape|striptags }}{% endif %}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{% if image.description %}{{ image.description|escape|striptags }}{% endif %}" /></a></li>
 			{% endfor %}
 			</ul>
 		</div>
@@ -54,7 +54,7 @@ jQuery(document).ready(function ($) {
 		<p class="thmb-nav"><a href="#prev" class="thmb-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="thmb-next">{% trans "Next &raquo;" %}</a></p>
 		<ul>
 			{% for image in images %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{{ image.title|escape|striptags }}"><img src="{% thumbnail image.image 50x40 crop %}" alt="{{ image.description|escape|striptags }}" /></a></li>
+				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{% if image.title %}{{ image.title|escape|striptags }}{% endif %}"><img src="{% thumbnail image.image 115x50 crop %}" alt="{% if image.description %}{{ image.description|escape|striptags }}{% endif %}" /></a></li>
 			{% endfor %}
 		</ul>
 	</div>
