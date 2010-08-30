@@ -44,6 +44,8 @@ class Image(models.Model):
     gallery = models.ForeignKey(Gallery, related_name="images")
     image = FilerImageField()
     page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
+    free_link = models.CharField(_("link"), max_length=255, blank=True, null=True, 
+                                 help_text=_("an absolute url"))
     ordering = models.IntegerField(null=True, blank=True)
     drop_up_links = models.ManyToManyField('sites.Site', blank=True)
     
@@ -64,6 +66,15 @@ class Image(models.Model):
     @property
     def file(self):
         return self.image.file
+    
+    @property
+    def link(self):
+        if self.free_link:
+            return self.free_link
+        elif self.page_link and self.page_link:
+            return self.page_link.get_absolute_url()
+        else:
+            return ''
     
 aspect_ratio_choices = getattr(settings, "IMAGE_ASPECT_RATIO_CHOICES", (
     (1, '1:1'),
@@ -94,6 +105,8 @@ class CarouselImage(models.Model):
     #title_2 = models.CharField(_('title 2'), max_length=150, null=True, blank=True)
     #description_2 = models.TextField(_('description 2'), null=True, blank=True)
     page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
+    free_link = models.CharField(_("link"), max_length=255, blank=True, null=True, 
+                                 help_text=_("an absolute url"))
     url = models.URLField(_('URL'), blank=True, \
         help_text=_('If the %(page_link)s field is not used, you can enter an external URL here.') % {'page_link': _('page link')})
     ordering = models.PositiveSmallIntegerField(_('ordering'), null=True, blank=True)
@@ -115,6 +128,14 @@ class CarouselImage(models.Model):
             return self.page_link.get_absolute_url()
         elif self.url:
             return self.url
+    @property
+    def link(self):
+        if self.free_link:
+            return self.free_link
+        elif self.page_link and self.page_link:
+            return self.page_link.get_absolute_url()
+        else:
+            return ''
     
 class CarouselFeature(CMSPlugin):
     title = models.CharField(_('title'), max_length=50, blank=True)

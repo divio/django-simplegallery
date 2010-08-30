@@ -33,7 +33,7 @@ class ImageInline(admin.TabularInline):#MultilingualInlineAdmin):
     num_in_admin = 20 
     extra = 4 
     raw_id_fields = ('image',) # workaround... because otherwise admin will render an "addlink" after the field
-    fields = ('image','page_link','ordering','admin_edit_url',)
+    fields = ('image','ordering','admin_edit_url',)
     #readonly_fields = ('admin_edit_url',)
     def queryset(self, request):
         return self.model._default_manager.all()
@@ -117,12 +117,13 @@ class ImageDetailForm(MultilingualModelAdminForm):
         choices = [(s.id, s.name) for s in Site.objects.all()]
         self.fields['drop_up_links'].widget.choices = choices
         if self.instance and self.instance.id and self.instance.image:
-            self.fields['image_preview'].initial = self.instance.image.icons['64']
+            self.fields['image_preview'].initial = self.instance.image.icons.get('64','')
 
 class ImageDetailAdmin(MultilingualModelAdmin):
     form = ImageDetailForm
     use_fieldsets= (
         (None, {'fields': ('gallery','image_preview',)}),
+        (_('links'), {'fields': ('page_link','free_link',)}),
         (None, {'fields': ('title','description',)}),
         (_('advanced'), {'fields': ('drop_up_links',),'classes': ('collapse',),}),
     )
