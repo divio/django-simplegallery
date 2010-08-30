@@ -91,8 +91,8 @@ class CarouselImage(models.Model):
     date = models.DateField(_('date'), null=True, blank=True)
     title = models.CharField(_('title'), max_length=150, null=True, blank=True)
     description = models.TextField(_('description'), null=True, blank=True)
-    title_2 = models.CharField(_('title 2'), max_length=150, null=True, blank=True)
-    description_2 = models.TextField(_('description 2'), null=True, blank=True)
+    #title_2 = models.CharField(_('title 2'), max_length=150, null=True, blank=True)
+    #description_2 = models.TextField(_('description 2'), null=True, blank=True)
     page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
     url = models.URLField(_('URL'), blank=True, \
         help_text=_('If the %(page_link)s field is not used, you can enter an external URL here.') % {'page_link': _('page link')})

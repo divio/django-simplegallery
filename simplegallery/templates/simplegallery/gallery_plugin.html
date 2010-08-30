@@ -44,7 +44,7 @@ jQuery(document).ready(function ($) {
 			{% endfor %}
 			<p class="fv-caption-inline">&nbsp;</p>
 		</div>
-		<div class="fv-wrapper">
+		<div class="fv-wrapper" {% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %}>
 			<ul>
 			{% for image in gallery.images.all %}
 				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.page_link %}{{ image.page_link.get_absolute_url }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}" rel="{% if not image.page_link %}lightbox group {% endif %}{% thumbnail image.image 800x600 %}" title="{% if image.title %}{{ image.title|escape|striptags }}{% endif %}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{% if image.description %}{{ image.description|escape|striptags }}{% endif %}" /></a></li>

@@ -9,7 +9,7 @@ from django.template.defaultfilters import title
 
 class SimpleGalleryPublicationPlugin(CMSPluginBase):
     model = GalleryPublication
-    name = _("gallery")
+    name = _("Gallery")
     render_template = "simplegallery/gallery_plugin.html"
     change_form_template = "simplegallery/plugin_form.html"
     text_enabled = False
@@ -53,7 +53,7 @@ class CarouselImageInline(admin.StackedInline):
 
 class CarouselFeaturePlugin(CMSPluginBase):
     model = CarouselFeature
-    name = title(_('gallery lite'))
+    name = title(_('Gallery lite'))
     placeholders = ('feature_home',)
     render_template = "simplegallery/gallery_lite.html"
     change_form_template = "simplegallery/plugin_form.html"
