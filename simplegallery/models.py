@@ -44,7 +44,7 @@ class Image(models.Model):
     gallery = models.ForeignKey(Gallery, related_name="images")
     image = FilerImageField()
     page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
-    free_link = models.CharField(_("link"), max_length=255, blank=True, null=True, 
+    free_link = models.CharField(_("link"), max_length=2048, blank=True, null=True, 
                                  help_text=_("an absolute url"))
     ordering = models.IntegerField(null=True, blank=True)
     drop_up_links = models.ManyToManyField('sites.Site', blank=True)
@@ -105,7 +105,7 @@ class CarouselImage(models.Model):
     #title_2 = models.CharField(_('title 2'), max_length=150, null=True, blank=True)
     #description_2 = models.TextField(_('description 2'), null=True, blank=True)
     page_link = PageField(verbose_name=_('page link'), null=True, blank=True)
-    free_link = models.CharField(_("link"), max_length=255, blank=True, null=True, 
+    free_link = models.CharField(_("link"), max_length=2048, blank=True, null=True, 
                                  help_text=_("an absolute url"))
     url = models.URLField(_('URL'), blank=True, \
         help_text=_('If the %(page_link)s field is not used, you can enter an external URL here.') % {'page_link': _('page link')})
