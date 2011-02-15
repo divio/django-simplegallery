@@ -21,7 +21,7 @@ CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GA
 class Gallery(models.Model):
     name = models.CharField(max_length=255, unique=True,
         help_text=_("A unique identifier for this gallery, this will only be used in the admin panel."))
-    groups = models.ManyToManyField(Group)
+    groups = models.ManyToManyField(Group, blank=True)
     
     class Translation(TranslationModel):
         title = models.CharField(_('title'), max_length=255, blank=True, default='')

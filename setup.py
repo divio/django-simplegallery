@@ -3,7 +3,20 @@ PACKAGE_NAME = 'django-%s' % APP_NAME
 DESCRIPTION = 'django image gallery app'
 PROJECT_URL = 'http://github.com/divio/%s/' % PACKAGE_NAME
 
-INSTALL_REQUIRES = [] # e.g 'django (>1.1.0)'
+INSTALL_REQUIRES = [
+    'django (<1.2.5)',
+    'mptt (<0.4)',
+    'django_cms',
+    'django_filer',
+    'django_multilingual_ng',
+    'django_tinymce',
+] # e.g 'django (>1.1.0)'
+
+EXTRA_REQUIRES={
+    'South':  ["south"],
+}
+
+
 AUTHOR="Stefan Foulis"
 
 EXTRA_CLASSIFIERS = [
@@ -66,6 +79,7 @@ setup(
     platforms=['OS Independent'],
     classifiers=classifiers,
     requires=INSTALL_REQUIRES,
+    extras_require=EXTRA_REQUIRES,
     packages=find_packages(),
     package_dir={
         APP_NAME: APP_NAME,
