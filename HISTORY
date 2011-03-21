@@ -1,5 +1,15 @@
+0.12
+====
+
+* groups is no longer a mandatory field
+Backward incompatible changes!
+
+* css has changed
+* js dependencies are no longer bundled
+
 0.11.0a1
 ========
+
 Backwards incompatible changes!
  * added django-sekizai dependency
  * added django-tinymce dependency
@@ -11,4 +21,5 @@ No more `null=True` on `CharFields` and `TextFields` (used `blank=True, default=
 
 0.10.0a
 =======
+
 Changed image fields from image_filer to filer (backwards incompatible change)
