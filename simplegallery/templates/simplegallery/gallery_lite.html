@@ -1,62 +1,32 @@
-{% load i18n thumbnail sekizai_tags %}
-{% addtoblock "css" %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}simplegallery/css/simplegallery.css" media="screen, projection" />{% endaddtoblock "css" %}
-{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.cycle-2.88.js"></script>{% endaddtoblock "js" %}
-{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.simplegallery.js"></script>{% endaddtoblock "js" %}
+{% extends "simplegallery/gallery_plugin.html" %}
+{% load i18n sekizai_tags %}
+
+{% block gallery_css %}plugin_gallery-lite{% endblock %}
+
+{% block galery_options %}
 {% addtoblock "js" %}
 <script type="text/javascript">
 //<![CDATA[
 jQuery(document).ready(function ($) {
-	setTimeout(function () {
-		$('#simplegallery_{{ instance.id }}').simpleGallery({
-			navSelectors: { 
-				next: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#next]',
-				prev: '#simplegallery_{{ instance.id }} .fv-nav a[href*=#prev]'
-			},
-			timeout: {{ instance.interval }}*1000,
-			thumbnails: false,
-			autoSlideNav: true,
-			controls: false,
-			status: true,
+
+	new Cl.Gallery('#plugin_gallery-{{ instance.id }}', {
+		fx: 'fade',
+		timeout: {{ instance.interval }}*1000,
+		ui: {
 			caption: false,
-			disableAnchor: true
-		});
-	}, 1000);
+			controls: false,
+			thumbnails: false
+		},
+		plugins: {
+			external: false,
+			keycontrol: false,
+			lightbox: false,
+			lightboxOptions: {}
+		}
+	});
+
 });
 //]]>
 </script>
 {% endaddtoblock %}
-
-<!-- start: gallery -->
-<div class="plugin_simplegallery clearfix" id="simplegallery_{{ instance.id }}">
-	<div class="simplegallery_fullview">
-		<p class="fv-nav"><a href="#prev" class="fv-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="fv-next">{% trans "Next &raquo;" %}</a></p>
-		<p class="fv-magnifier"><a href="#zoom"><abbr title="{% trans 'Zoom in' %}">+</abbr></a></p>
-		<p class="fv-controls"><a href="#play" class="fv-play">{% trans "play" %}</a> <a href="#pause" class="fv-pause">{% trans "pause" %}</a></p>
-		<p class="fv-status">&nbsp;</p>
-		<div class="fv-caption">
-			{% for image in images %}
-			<div class="fv-caption-block">
-				{% if image.title %}<div class="fv-caption-title">{{ image.title|escape }}</div>{% endif %}
-				{% if image.description %}<div class="fv-caption-desc">{{ image.description|safe }}</div>{% endif %}
-			</div>
-			{% endfor %}
-			<p class="fv-caption-inline">&nbsp;</p>
-		</div>
-		<div class="fv-wrapper" {% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %}>
-			<ul>
-			{% for image in images %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% if image.link %}{{ image.link }}{% else %}{% thumbnail image.image 800x600 %}{% endif %}" rel="{% if not image.link %}lightbox group {% endif %}{% thumbnail image.image 800x600 %}" title="{% if image.title %}{{ image.title|escape|striptags }}{% endif %}"><img src="{% thumbnail image.image image_size.0 crop,upscale %}"{% if image_size %} style="height: {{ image_size.2 }}px;"{% endif %} alt="{% if image.description %}{{ image.description|escape|striptags }}{% endif %}" /></a></li>
-			{% endfor %}
-			</ul>
-		</div>
-	</div>
-	<div class="simplegallery_thumbnails">
-		<p class="thmb-nav"><a href="#prev" class="thmb-prev">{% trans "&laquo; Back" %}</a> <a href="#next" class="thmb-next">{% trans "Next &raquo;" %}</a></p>
-		<ul>
-			{% for image in images %}
-				<li{% if forloop.first %} class="first"{% endif %}{% if forloop.last %} class="last"{% endif %}><a href="{% thumbnail image.image 800x600 %}" title="{% if image.title %}{{ image.title|escape|striptags }}{% endif %}"><img src="{% thumbnail image.image 115x50 crop %}" alt="{% if image.description %}{{ image.description|escape|striptags }}{% endif %}" /></a></li>
-			{% endfor %}
-		</ul>
-	</div>
-</div>
-<!-- end: gallery -->
+{% endblock %}

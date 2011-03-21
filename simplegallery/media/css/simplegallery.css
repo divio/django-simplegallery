@@ -1,78 +1,46 @@
 @charset "utf-8";
 /**
+ * @framework	CFF - Classy Frontend Framework
  * @author		Angelo Dini
- * @copyright	http://www.divio.ch
+ * @copyright	http://www.divio.ch under the BSD Licence
  */
 
 /*##################################################|*/
-/* #PLUGIN SIMPLEGALLERY# */
-.plugin_simplegallery,
-.plugin_simplegallery-lite { margin:0 0 15px; }
+/* #BASE# */
+.plugin_gallery { margin:0 0 15px; position:relative; left:0; top:0; z-index:10; }
 
-/* gallery container */
-.simplegallery_fullview { position:relative; left:0; top:0; z-index:20; margin:0 0 5px 0; }
-.simplegallery_fullview ul { list-style:none; padding:0; margin:0; }
-.simplegallery_fullview ul li { padding:0; margin:0; zoom:1; }
+/* gallery canvas */
+.gallery-canvas { position:relative; left:0; top:0; z-index:20; margin:0; overflow:hidden; }
+.gallery-canvas .gallery-list { list-style:none; padding:0; margin:0; }
+.gallery-canvas .gallery-list .gallery-list-slide { padding:0; margin:0; zoom:1; width:100%; }
+.gallery-canvas .gallery-list .gallery-item { text-align:center; }
 
-.fv-wrapper { position:relative; left:0; top:0; z-index:21; overflow:hidden; line-height:0; font-size:0;
-			  /* ie fix */
-			  width:100%; height:auto; }
+.gallery-thumbs { display:none; }
+.gallery-thumbs ul { position:relative; left:0; top:0; z-index:20; list-style:none; padding:0; margin:0; }
+.gallery-thumbs ul li { padding:0; margin:0; }
 
-/* thumbnail container */
-.simplegallery_thumbnails { position:relative; left:0; top:0; z-index:19; overflow:hidden; }
-.simplegallery_thumbnails ul { display:none; list-style:none; padding:0; margin:0; }
-.simplegallery_thumbnails ul li { float:left; line-height:0; padding:0; margin:0 0 10px 0; zoom:1; }
-.simplegallery_thumbnails ul li a { float:left; border:3px solid #ddd; margin:0 6px 0 0; }
-.simplegallery_thumbnails ul li a:hover { border:3px solid #ccc; }
-.simplegallery_thumbnails ul li.active a { border:3px solid #000; }
+.gallery-controls { display:none; padding:0; margin:0; }
+.gallery-controls .gallery-ctrl-play,
+.gallery-controls .gallery-ctrl-pause { display:inline; }
+.gallery-controls .active { display:none; }
 
-/* gallery navigation */
-.fv-nav { float:left; display:none; position:absolute; left:0; top:45%; z-index:25; width:100%; padding:0; margin:0; }
-.fv-nav-disabled { color:#ccc !important; cursor:normal; }
-.fv-nav-disabled:hover { color:#ccc !important; background:#fff !important; }
+.gallery-caption { display:none; }
 
-.fv-prev { position:absolute; left:0; top:0; z-index:26; }
-.fv-next { position:absolute; right:0; top:0; z-index:26; }
-.fv-prev, .fv-next { display:block; font-size:14px; color:#000; text-decoration:none !important; padding:5px 10px; background:#fff; }
-.fv-prev:hover, .fv-next:hover { color:#fff; background:#000; }
+/*##################################################|*/
+/* #CUSTOM# */
+.gallery-canvas .gallery-list .gallery-item { padding-right:5px; }
 
-/* thumbnail navigation */
-.thmb-nav { display:none; }
-.thmb-nav a { display:block; position:absolute; top:32%; z-index:26; color:#fff; text-decoration:none;
-			  padding:0 5px; background:#000; }
-.thmb-nav a:hover { color:#000; background:#fff; }
-.thmb-nav .thmb-prev { left:0; }
-.thmb-nav .thmb-next { right:0; }
+.gallery-thumbs {}
+.gallery-thumbs ul { text-align:center; display:none; }
+.gallery-thumbs ul li { float:left; display:inline-block; }
+.gallery-thumbs ul li a { float:left; display:inline-block; padding:0 5px; }
+.gallery-thumbs ul li a:hover { background-position:left bottom; }
 
-.thmb_cycle li { height:66px; } /* prevent loading errors */
+.gallery-thumbs ul li.gallery-thumbs-prev a {}
+.gallery-thumbs ul li.gallery-thumbs-next a {}
+.gallery-thumbs ul li.gallery-thumbs-next a:hover,
+.gallery-thumbs ul li.gallery-thumbs-prev a:hover {}
 
-/* thumbnail container nummeric */
-.thmb-nummeric { position:absolute; right:15px; bottom:0; z-index:22; }
-.thmb-nummeric li a { color:#fff; text-decoration:none; padding-right:2px; line-height:1.6; border:none !important; }
-.thmb-nummeric li a:hover { border:none !important; }
-.thmb-nummeric li.active a { font-weight:bold; border:none !important; }
+.gallery-thumbs ul li.active a {}
 
-/* controls*/
-.fv-controls { display:none; position:absolute; left:45px; top:15px; z-index:22; }
-.fv-controls a { float:left; font-size:10px; color:#666; line-height:1.5; text-decoration:none; padding:0 5px; margin-right:10px; background:#fff; }
-.fv-controls a:hover { color:#fff; background:#000; }
-.fv-controls .active { color:#000; }
-
-/* status */
-.fv-status { display:none; position:absolute; right:45px; top:15px; z-index:25; padding:0 5px;
-			 color:#666; font-size:10px; background:#fff; }
-
-/* gallery caption */
-.fv-caption { display:none; position:absolute; left:0; bottom:0; z-index:22; height:30%; width:100%;
-			  background:rgba(0, 0, 0, 0.5); -pie-background:rgba(0, 0, 0, 0.5); behavior:url('/media/css/PIE.htc'); }
-.fv-caption-inline { display:none; padding:20px 25px; color:#fff; }
-.fv-caption-inline span { display:block; font-size:16px; font-weight:bold; line-height:1.8; }
-
-.fv-caption-block { display:none; padding:20px 25px; color:#fff; }
-
-/* gallery lightbox effect */
-.fv-magnifier { display:none; position:absolute; left:15px; top:15px; z-index:22; text-align:center; }
-.fv-magnifier a { display:block; color:#000; font-size:10px; color:#666; line-height:1.2; text-decoration:none;
-				  width:15px; height:15px; background:#fff; }
-.fv-magnifier a:hover { color:#fff; background:#000; }
-.fv-magnifier a abbr { cursor:pointer; border:none; }
+/* #CUSTOM/lite# */

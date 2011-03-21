@@ -21,6 +21,7 @@ class SimpleGalleryPublicationPlugin(CMSPluginBase):
         context.update({
             'instance': instance,
             'gallery': instance.gallery,
+            'images': instance.gallery.images.all(),
             'image_size': get_image_size(context, instance),
             'placeholder': placeholder,
         })
