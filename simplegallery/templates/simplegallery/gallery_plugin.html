@@ -1,7 +1,9 @@
 {% load i18n thumbnail sekizai_tags %}
-{% addtoblock "css" %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}simplegallery/css/simplegallery.css" media="screen, projection" />{% endaddtoblock "css" %}
-{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.cycle-2.97.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}js/libs/jquery-1.4.4.js"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}js/libs/classy-1.3.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}js/plugins/jquery.cycle-2.97.js"></script>{% endaddtoblock "js" %}
 {% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}simplegallery/js/jquery.simplegallery.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "css" %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}simplegallery/css/simplegallery.css" media="screen, projection" />{% endaddtoblock "css" %}
 {% block galery_options %}
 {% addtoblock "js" %}
 <script type="text/javascript">
