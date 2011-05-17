@@ -11,6 +11,12 @@ from multilingual.admin import (
 )
 from simplegallery.models import Gallery, Image
 
+
+def sync_folder(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.sync_folder()
+sync_folder.short_description = "Sync galleries with folders (if selected)"
+
 class ReadOnlyLinkWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         if value:
@@ -72,6 +78,7 @@ class GalleryAdmin(MultilingualModelAdmin):
     inlines = [
         ImageInline,
     ]
+    actions = [sync_folder,]
     list_display = ('name', 'description', 'display_groups')
     search_fields = ('name', 'translations__title','translations__description',)
     # using ordering somehow results in double querysets
@@ -83,11 +90,18 @@ class GalleryAdmin(MultilingualModelAdmin):
         ('Language Dependent', {
             'fields': ('title', 'description'),
         }),
-        ('Groups', {
+        ('Extra', {
             'classes': ('collapse',),
-            'fields': ('groups',),
+            'fields': ('groups', 'folder'),
         }),
     )
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.save()
+        formset.save_m2m()
+        if form.instance.folder:
+            form.instance.sync_folder()
 
     def display_groups(self, obj):
         return ', '.join([str(g) for g in obj.groups.all()])

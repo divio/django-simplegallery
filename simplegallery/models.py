@@ -10,6 +10,9 @@ from django.utils.text import truncate_words
 from multilingual.translation import TranslationModel
 
 from filer.fields.image import FilerImageField
+from filer.models.foldermodels import Folder
+from filer.models import File as FilerFileModel
+from filer.models import Image as FilerImageModel
 
 from simplegallery.fields import AspectRatioField
 
@@ -18,10 +21,29 @@ from simplegallery import south_introspections # make sure south knows about the
 
 CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES = getattr( settings, 'CMSPLUGIN_SIMPLE_GALLERY_STYLE_CHOICES',() )
 
+
 class Gallery(models.Model):
     name = models.CharField(max_length=255, unique=True,
         help_text=_("A unique identifier for this gallery, this will only be used in the admin panel."))
     groups = models.ManyToManyField(Group, blank=True)
+    folder = models.ForeignKey(Folder, blank=True, null=True, help_text="<b>Caution!</b> Saving this gallery will remove any images that are not in the selected folder.")
+    
+    def sync_folder(self):
+        '''
+        Check if the Gallery is linked to a Filer.Folder, in this case
+        sync it, by deleting images not in the folder from the gallery
+        and adding new images from the folder, to the existing gallery
+        '''
+        if self.folder:
+            # Delete images, which doesnt have a parent folder equal
+            # to the gallery.folder
+            self.images.exclude(image__in=FilerImageModel.objects.filter(folder=self.folder)).delete()
+
+            # Loop over all images that are in the folder, except the
+            # ones we already have in the gallery and add them
+            for f in self.folder.all_files.exclude(pk__in=[im.image.pk for im in self.images.all()]):
+                if f.image:
+                    self.images.create(image=f.image)
     
     class Translation(TranslationModel):
         title = models.CharField(_('title'), max_length=255, blank=True, default='')
@@ -38,7 +60,6 @@ class Gallery(models.Model):
         if not hasattr(self, '_has_drop_up'):
             self._has_drop_up = bool(self.images.filter(drop_up_links__isnull=False).count())
         return self._has_drop_up
-        
 
 class Image(models.Model):
     gallery = models.ForeignKey(Gallery, related_name="images")
@@ -147,3 +168,14 @@ class CarouselFeature(CMSPlugin):
     
     def get_aspect_ratio(self):
         return self.aspect_ratio
+
+
+from django.db.models.signals import post_save
+def sync_folder_signal(sender, instance, created=False, **kwargs):
+    print "Please sync me", instance, sender
+    if sender in (FilerFileModel, FilerImageModel) and instance.folder:
+        [g.sync_folder() for g in instance.folder.gallery_set.all()]
+    elif sender in (FilerFileModel, FilerImageModel) and not instance.folder:
+        print "sync (remove)", Gallery.objects.filter(images__image__in=[instance])
+        [g.sync_folder() for g in Gallery.objects.filter(images__image__in=[instance])]
+post_save.connect(sync_folder_signal, sender=FilerFileModel)
