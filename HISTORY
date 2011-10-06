@@ -1,3 +1,7 @@
+0.13
+====
+* its now possible to link a gallery to a django-filer folder, so it will one-way sync with the folder (changes in simplegallery are ignored, all changes from filer will be accepted)
+
 0.12
 ====
 
