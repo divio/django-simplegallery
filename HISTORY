@@ -1,11 +1,23 @@
+0.14
+====
+
+* Made the select widget for folder sync more usable for large folder trees by
+  ordering and indenting them according to the folder-tree structure
+* added a ``select_related`` to the gallery plugin, which saves a query per
+  image.
+* fixed rst markup in this document.
+
 0.13
 ====
-* its now possible to link a gallery to a django-filer folder, so it will one-way sync with the folder (changes in simplegallery are ignored, all changes from filer will be accepted)
+* its now possible to link a gallery to a django-filer folder, so it will
+  one-way sync with the folder (changes in simplegallery are ignored, all
+  changes from filer will be accepted)
 
 0.12
 ====
 
-* groups is no longer a mandatory field
+* ``groups`` is no longer a mandatory field
+
 Backward incompatible changes!
 
 * css has changed
@@ -15,15 +27,16 @@ Backward incompatible changes!
 ========
 
 Backwards incompatible changes!
- * added django-sekizai dependency
- * added django-tinymce dependency
- * default stylesheets and html structure changed, files renamed
 
-Added detail change view for images in Gallery
-No more `null=True` on `CharFields` and `TextFields` (used `blank=True, default=''` instead)
-
+* added ``django-sekizai`` dependency
+* added ``django-tinymce`` dependency
+* default stylesheets and html structure changed, files renamed
+* Added detail change view for images in Gallery
+* No more ``null=True`` on ``CharFields`` and ``TextFields`` (used
+  ``blank=True, default=''`` instead)
 
 0.10.0a
 =======
 
-Changed image fields from image_filer to filer (backwards incompatible change)
+Changed image fields from ``image_filer`` to ``filer`` (backwards incompatible
+change)

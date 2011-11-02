@@ -66,7 +66,7 @@ class CarouselFeaturePlugin(CMSPluginBase):
     def render(self, context, instance, placeholder):
         context.update({
             'instance': instance,
-            'images': instance.images.all(),
+            'images': instance.images.select_related('image',).all(),
             'image_size': get_image_size(context, instance),
             'placeholder': placeholder,
         })
