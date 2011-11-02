@@ -10,6 +10,7 @@ from multilingual.admin import (
     MultilingualInlineModelForm
 )
 from simplegallery.models import Gallery, Image
+from filer.models import Folder
 
 
 def sync_folder(modeladmin, request, queryset):
@@ -63,6 +64,7 @@ class GalleryAdminForm(MultilingualModelAdminForm):
         initial = kwargs.get('initial') or {}
         initial.update({'groups': [g.pk for g in self.current_request.user.groups.all()] + base_groups})
         kwargs['initial'] = initial
+        self.base_fields['folder'].choices = ((f.pk,  mark_safe(f.level*'&nbsp;&nbsp;' + unicode(f))) for f in Folder.tree.all())
         super(GalleryAdminForm, self).__init__(*args, **kwargs)
         
     def clean_groups(self):
