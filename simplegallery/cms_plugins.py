@@ -66,7 +66,7 @@ class CarouselFeaturePlugin(CMSPluginBase):
     def render(self, context, instance, placeholder):
         context.update({
             'instance': instance,
-            'images': instance.images.all(),
+            'images': instance.images.select_related('image',).all(),
             'image_size': get_image_size(context, instance),
             'placeholder': placeholder,
         })
@@ -88,5 +88,9 @@ def get_image_size(context, instance):
             width = instance.image.width
         except:
             width = 100
-    height = int(float(width) / instance.get_aspect_ratio())
-    return (u'%sx%s' % (width, height), width, height)
+    try:
+        width = int(float(width))
+    except ValueError:
+        width = 100
+    height = int(round(float(width) / instance.get_aspect_ratio()))
+    return (u'%dx%d' % (width, height), width, height)
